@@ -3,70 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amora Imani — Luxury Fashion</title>
+  <title>Amora Imani — London</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --black: #0a0a0a;
-      --charcoal: #1a1a1a;
-      --cream: #f8f5f0;
-      --ivory: #fefcf7;
-      --gold: #c9a96e;
-      --gold-light: #e8d5a8;
-      --beige: #e8e0d5;
-      --muted: #8a8278;
-      --text: #2c2c2c;
-      --text-light: #6b6560;
-      --white: #ffffff;
+      --ink: #0A0A0A;
+      --charcoal: #1C1816;
+      --warm-dark: #2A2420;
+      --cream: #F5EDE0;
+      --terracotta: #C75B3A;
+      --terracotta-dark: #A84A2E;
+      --gold: #B89B6B;
+      --gold-dim: #8A7A5A;
+      --text-muted: #A09888;
+      --white: #FFFFFF;
     }
     html { scroll-behavior: smooth; }
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--ivory);
-      color: var(--text);
+      background: var(--ink);
+      color: var(--cream);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-    h1, h2, h3, h4, h5 {
-      font-family: 'Playfair Display', serif;
-      font-weight: 400;
-    }
-    .subtitle {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.25rem;
-      color: var(--muted);
-      letter-spacing: 0.15em;
+    h1, h2, h3, h4 { font-family: 'Playfair Display', serif; font-weight: 400; }
+
+    .container { max-width: 1320px; margin: 0 auto; padding: 0 2.5rem; }
+    .section { padding: 7rem 0; }
+
+    .overline {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
       text-transform: uppercase;
-      margin-bottom: 0.75rem;
-    }
-    .container { max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
-    .section { padding: 6rem 0; }
-    .section-title {
-      font-size: 2.75rem;
-      text-align: center;
-      margin-bottom: 0.5rem;
-      color: var(--charcoal);
-    }
-    .section-desc {
-      text-align: center;
-      color: var(--text-light);
-      font-weight: 300;
-      max-width: 600px;
-      margin: 0 auto 3.5rem;
-      font-size: 1.05rem;
+      color: var(--gold-dim);
+      margin-bottom: 1rem;
+      font-weight: 400;
     }
 
     .btn {
-      display: inline-block;
-      padding: 0.9rem 2.5rem;
-      border: 1px solid var(--charcoal);
-      background: transparent;
-      color: var(--charcoal);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2.5rem;
+      border: none;
+      background: var(--terracotta);
+      color: var(--white);
       text-decoration: none;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       transition: all 0.4s ease;
@@ -74,359 +61,462 @@
       font-family: 'Inter', sans-serif;
       font-weight: 400;
     }
-    .btn:hover {
-      background: var(--charcoal);
-      color: var(--ivory);
+    .btn:hover { background: var(--terracotta-dark); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--cream);
+      color: var(--cream);
     }
+    .btn-outline:hover { background: var(--cream); color: var(--ink); }
     .btn-gold {
-      border-color: var(--gold);
+      background: transparent;
+      border: 1px solid var(--gold);
       color: var(--gold);
     }
-    .btn-gold:hover {
-      background: var(--gold);
-      color: var(--charcoal);
-    }
-    .btn-white {
-      border-color: var(--white);
-      color: var(--white);
-    }
-    .btn-white:hover {
-      background: var(--white);
-      color: var(--charcoal);
-    }
+    .btn-gold:hover { background: var(--gold); color: var(--ink); }
 
     /* Header */
     .header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
+      position: fixed; top: 0; left: 0; right: 0;
       z-index: 1000;
-      padding: 1.25rem 2rem;
+      padding: 1.5rem 2.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: all 0.4s ease;
-      background: transparent;
-    }
-    .header.scrolled {
-      background: rgba(254, 252, 247, 0.95);
-      backdrop-filter: blur(12px);
-      padding: 0.75rem 2rem;
-      box-shadow: 0 1px 20px rgba(0,0,0,0.04);
+      transition: all 0.5s ease;
+      mix-blend-mode: difference;
     }
     .header-logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.6rem;
-      letter-spacing: 0.1em;
+      display: flex;
+      align-items: center;
       text-decoration: none;
-      color: var(--ivory);
-      font-weight: 600;
-      transition: color 0.3s;
     }
-    .header.scrolled .header-logo { color: var(--charcoal); }
+    .header-logo img {
+      height: 28px;
+      width: auto;
+      display: block;
+      filter: brightness(0) invert(1);
+      transition: filter 0.3s;
+    }
     .header-nav { display: flex; gap: 2.5rem; align-items: center; }
     .header-nav a {
       text-decoration: none;
-      color: var(--ivory);
-      font-size: 0.78rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      transition: color 0.3s;
-      font-weight: 400;
-    }
-    .header.scrolled .header-nav a { color: var(--text); }
-    .header-nav a:hover { color: var(--gold); }
-    .header-actions { display: flex; gap: 1.25rem; align-items: center; }
-    .header-actions a {
-      color: var(--ivory);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.3s;
-    }
-    .header.scrolled .header-actions a { color: var(--text); }
-    .header-actions a:hover { color: var(--gold); }
-    .cart-icon { position: relative; }
-    .cart-count {
-      position: absolute;
-      top: -6px; right: -8px;
-      background: var(--gold);
-      color: var(--charcoal);
-      font-size: 0.6rem;
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-    }
-
-    /* Hero */
-    .hero {
-      height: 100vh;
-      min-height: 700px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--black);
-      overflow: hidden;
-    }
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background: url('https://amoraimani.com/wp-content/uploads/2025/07/Orange-Modern-Coastal-Boutique-Shopify-Store-Blog-Banner-.png') center/cover no-repeat;
-      opacity: 0.6;
-    }
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(10,10,10,0.7), rgba(10,10,10,0.3));
-    }
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 0 2rem;
-      max-width: 800px;
-    }
-    .hero-content .subtitle {
-      color: var(--gold-light);
-      letter-spacing: 0.3em;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-    .hero-content h1 {
-      font-size: clamp(2.5rem, 6vw, 5rem);
       color: var(--white);
-      font-weight: 400;
-      line-height: 1.15;
-      margin-bottom: 1.5rem;
-    }
-    .hero-content p {
-      color: rgba(255,255,255,0.75);
-      font-size: 1.1rem;
-      font-weight: 300;
-      margin-bottom: 2.5rem;
-      max-width: 550px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Marquee */
-    .marquee {
-      background: var(--charcoal);
-      padding: 0.8rem 0;
-      overflow: hidden;
-      color: var(--gold-light);
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
+      transition: opacity 0.3s;
+      font-weight: 300;
+      opacity: 0.7;
     }
-    .marquee-inner {
+    .header-nav a:hover { opacity: 1; }
+    .header-actions { display: flex; gap: 1.25rem; align-items: center; }
+    .header-actions a {
+      color: var(--white);
+      text-decoration: none;
+      font-size: 1rem;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+    .header-actions a:hover { opacity: 1; }
+    .cart-count {
+      background: var(--terracotta);
+      color: var(--white);
+      font-size: 0.55rem;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: -6px;
+      vertical-align: super;
+    }
+    .mobile-toggle {
+      display: none;
+      background: none; border: none;
+      color: var(--white);
+      font-size: 1.5rem; cursor: pointer;
+    }
+
+    /* === HERO — Split Layout === */
+    .hero {
+      height: 100vh; min-height: 700px;
+      display: grid;
+      grid-template-columns: 38% 62%;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-left {
+      background: var(--charcoal);
       display: flex;
-      gap: 4rem;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem 3rem 4rem 2.5rem;
+      position: relative;
+    }
+    .hero-left .overline { color: var(--gold); }
+    .hero-left h1 {
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      font-weight: 400;
+      line-height: 1.08;
+      color: var(--cream);
+      margin-bottom: 1.5rem;
+    }
+    .hero-left h1 em {
+      font-style: italic;
+      color: var(--terracotta);
+    }
+    .hero-left p {
+      color: var(--text-muted);
+      font-weight: 300;
+      font-size: 0.9rem;
+      max-width: 340px;
+      margin-bottom: 2.5rem;
+      line-height: 1.8;
+    }
+    .hero-right {
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-right img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 1.2s ease;
+    }
+    .hero-right:hover img { transform: scale(1.04); }
+    .hero-right::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, var(--charcoal) 0%, transparent 30%);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem; left: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .hero-scroll span { width: 2rem; height: 1px; background: var(--gold-dim); }
+
+    /* === MARQUEE === */
+    .marquee-bar {
+      background: var(--warm-dark);
+      padding: 0.7rem 0;
+      overflow: hidden;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .marquee-track {
+      display: flex; gap: 3rem;
       white-space: nowrap;
-      animation: marquee 30s linear infinite;
+      animation: marquee 35s linear infinite;
+      color: var(--gold-dim);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 300;
     }
     @keyframes marquee {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
 
-    /* Categories */
-    .categories-grid {
+    /* === THE EDIT - Asymmetrical Categories === */
+    .edit-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
+      grid-template-columns: 2fr 1fr;
+      gap: 1px;
+      background: var(--warm-dark);
     }
-    .cat-card {
+    .edit-grid > * { background: var(--ink); }
+    .edit-feature {
       position: relative;
-      height: 420px;
+      height: 580px;
       overflow: hidden;
       cursor: pointer;
-      display: flex;
-      align-items: flex-end;
-      padding: 2.5rem;
     }
-    .cat-card img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
+    .edit-feature img {
+      width: 100%; height: 100%;
       object-fit: cover;
       transition: transform 0.8s ease;
     }
-    .cat-card:hover img { transform: scale(1.05); }
-    .cat-card-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(transparent 40%, rgba(0,0,0,0.6));
+    .edit-feature:hover img { transform: scale(1.04); }
+    .edit-feature .overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(transparent 30%, rgba(10,10,10,0.85));
     }
-    .cat-card-content {
-      position: relative;
-      z-index: 2;
-      color: var(--white);
+    .edit-feature .info {
+      position: absolute; bottom: 2.5rem; left: 2.5rem;
+      color: var(--cream);
     }
-    .cat-card-content h3 {
-      font-size: 1.8rem;
-      margin-bottom: 0.3rem;
-    }
-    .cat-card-content span {
-      font-size: 0.75rem;
+    .edit-feature .info h3 { font-size: 2rem; margin-bottom: 0.3rem; }
+    .edit-feature .info span {
+      font-size: 0.65rem; letter-spacing: 0.2em;
       text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: var(--gold-light);
+      color: var(--gold);
     }
+    .edit-side {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .edit-side .edit-feature {
+      height: 289.5px;
+    }
+    .edit-side .edit-feature .info h3 { font-size: 1.4rem; }
+    .edit-side .edit-feature .info { bottom: 1.5rem; left: 1.5rem; }
 
-    /* Products */
-    .products-grid {
+    /* === PRODUCTS - Editorial Masonry === */
+    .editorial-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 3rem;
+    }
+    .editorial-header h2 {
+      font-size: 2.8rem;
+      max-width: 500px;
+      line-height: 1.12;
+    }
+    .editorial-header h2 em { color: var(--terracotta); font-style: italic; }
+
+    .editorial-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 1.5rem;
     }
-    .product-card {
-      background: var(--white);
-      overflow: hidden;
-      transition: transform 0.4s ease;
-    }
-    .product-card:hover { transform: translateY(-4px); }
-    .product-image {
+    .editorial-grid .wide { grid-column: span 2; }
+    .editorial-grid .tall { grid-row: span 2; }
+
+    .ed-card {
       position: relative;
-      aspect-ratio: 3 / 4;
       overflow: hidden;
-      background: var(--beige);
+      cursor: pointer;
+      background: var(--charcoal);
     }
-    .product-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .ed-card img {
+      width: 100%; display: block;
       transition: transform 0.8s ease;
     }
-    .product-card:hover .product-image img { transform: scale(1.04); }
-    .product-badge {
-      position: absolute;
-      top: 1rem; left: 1rem;
-      background: var(--charcoal);
+    .ed-card:hover img { transform: scale(1.04); }
+    .ed-card .badge {
+      position: absolute; top: 1rem; left: 1rem;
+      background: var(--terracotta);
       color: var(--white);
-      font-size: 0.65rem;
-      padding: 0.3rem 0.7rem;
-      letter-spacing: 0.1em;
+      font-size: 0.55rem;
+      padding: 0.25rem 0.6rem;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
     }
-    .product-info {
-      padding: 1.25rem 0 0.5rem;
+    .ed-card .meta {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 2rem 1.5rem 1.5rem;
+      background: linear-gradient(transparent, rgba(10,10,10,0.9));
     }
-    .product-info .category {
-      font-size: 0.65rem;
+    .ed-card .meta .tag {
+      font-size: 0.55rem;
       text-transform: uppercase;
       letter-spacing: 0.15em;
-      color: var(--muted);
-      margin-bottom: 0.25rem;
+      color: var(--gold-dim);
+      margin-bottom: 0.2rem;
     }
-    .product-info h4 {
+    .ed-card .meta h4 {
       font-size: 1.1rem;
       font-weight: 400;
-      margin-bottom: 0.3rem;
+      color: var(--cream);
     }
-    .product-info .price {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.2rem;
-      color: var(--charcoal);
+    .ed-card .meta .price {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--cream);
     }
-    .product-info .price .old {
+    .ed-card .meta .price .old {
       text-decoration: line-through;
-      color: var(--muted);
+      color: var(--text-muted);
       margin-right: 0.5rem;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
-    /* About */
-    .about-grid {
+    .ed-card-img-1 { aspect-ratio: 1; object-fit: cover; }
+    .ed-card-img-portrait { aspect-ratio: 3/4; object-fit: cover; }
+
+    /* === JEWELLERY SPOTLIGHT === */
+    .spotlight {
       display: grid;
       grid-template-columns: 1fr 1fr;
+      min-height: 550px;
+      background: var(--charcoal);
+    }
+    .spotlight-image {
+      position: relative;
+      overflow: hidden;
+    }
+    .spotlight-image img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .spotlight-image::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, var(--charcoal) 90%);
+    }
+    .spotlight-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem;
+    }
+    .spotlight-content .overline { color: var(--gold); }
+    .spotlight-content h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.25rem;
+      line-height: 1.15;
+    }
+    .spotlight-content p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 300;
+      margin-bottom: 2rem;
+      line-height: 1.8;
+      max-width: 420px;
+    }
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .mini-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1.25rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.3s;
+    }
+    .mini-item:hover { border-color: var(--gold-dim); background: rgba(255,255,255,0.05); }
+    .mini-item span { color: var(--gold-dim); font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; }
+    .mini-item strong {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--cream);
+    }
+
+    /* === QUOTE === */
+    .quote-section {
+      padding: 8rem 0;
+      text-align: center;
+    }
+    .quote-section blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--cream);
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.3;
+    }
+    .quote-section cite {
+      display: block;
+      margin-top: 2rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      font-style: normal;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* === SALE === */
+    .sale {
+      padding: 6rem 0;
+      background: var(--charcoal);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .sale::before {
+      content: 'SALE';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(12rem, 25vw, 22rem);
+      font-weight: 700;
+      color: rgba(255,255,255,0.02);
+      pointer-events: none;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .sale .content { position: relative; z-index: 2; }
+    .sale .overline { color: var(--terracotta); }
+    .sale h2 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      color: var(--cream);
+      margin-bottom: 0.75rem;
+    }
+    .sale p {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    /* === ABOUT MINI === */
+    .about-compact {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
       gap: 4rem;
       align-items: center;
     }
-    .about-image {
+    .about-compact img {
       width: 100%;
-      height: 600px;
+      height: 500px;
       object-fit: cover;
     }
-    .about-content h2 {
-      font-size: 2.5rem;
-      margin-bottom: 1.5rem;
+    .about-compact h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1.25rem;
     }
-    .about-content p {
-      color: var(--text-light);
+    .about-compact p {
+      color: var(--text-muted);
       font-weight: 300;
+      font-size: 0.88rem;
+      line-height: 1.9;
       margin-bottom: 1rem;
-      font-size: 0.95rem;
-      line-height: 1.8;
     }
 
-    /* Services */
-    .services-grid {
+    /* === SERVICES === */
+    .services-strip {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
+      grid-template-columns: repeat(6, 1fr);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .service-item {
+      padding: 1.5rem;
       text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.3s;
     }
-    .service-card {
-      padding: 2.5rem 1.5rem;
-      border: 1px solid var(--beige);
-      transition: all 0.3s ease;
-    }
-    .service-card:hover {
-      border-color: var(--gold);
-      background: var(--white);
-    }
-    .service-card .icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      display: block;
-    }
-    .service-card h4 {
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-    }
-    .service-card p {
-      color: var(--text-light);
-      font-size: 0.85rem;
-      font-weight: 300;
-    }
+    .service-item:last-child { border-right: none; }
+    .service-item:hover { background: var(--warm-dark); }
+    .service-item .icon { font-size: 1.3rem; margin-bottom: 0.5rem; display: block; }
+    .service-item h4 { font-size: 0.85rem; margin-bottom: 0.2rem; color: var(--cream); }
+    .service-item p { font-size: 0.65rem; color: var(--text-muted); font-weight: 300; }
 
-    /* Sale Banner */
-    .sale-banner {
-      background: var(--charcoal);
-      padding: 5rem 0;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .sale-banner::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(201,169,110,0.03) 40px, rgba(201,169,110,0.03) 80px);
-    }
-    .sale-banner .subtitle {
-      color: var(--gold);
-    }
-    .sale-banner h2 {
-      font-size: 3.5rem;
-      color: var(--white);
-      margin-bottom: 0.5rem;
-    }
-    .sale-banner p {
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 2rem;
-      font-size: 1.05rem;
-    }
-
-    /* Instagram Feed */
-    .insta-grid {
+    /* === INSTAGRAM === */
+    .insta-strip {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 0;
     }
     .insta-item {
       aspect-ratio: 1;
@@ -435,29 +525,27 @@
       cursor: pointer;
     }
     .insta-item img {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       object-fit: cover;
       transition: transform 0.6s ease;
     }
     .insta-item:hover img { transform: scale(1.06); }
     .insta-item::after {
       content: '@amoraimani';
-      position: absolute;
-      bottom: 1rem; left: 1rem;
-      color: var(--white);
-      font-size: 0.75rem;
+      position: absolute; bottom: 1rem; left: 1rem;
+      color: var(--cream);
+      font-size: 0.6rem;
       letter-spacing: 0.1em;
       opacity: 0;
       transition: opacity 0.3s;
     }
     .insta-item:hover::after { opacity: 1; }
 
-    /* Footer */
+    /* === FOOTER === */
     .footer {
-      background: var(--charcoal);
-      color: rgba(255,255,255,0.7);
-      padding: 4rem 0 2rem;
+      background: var(--ink);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 5rem 0 2rem;
     }
     .footer-grid {
       display: grid;
@@ -467,78 +555,86 @@
     }
     .footer-brand h3 {
       font-family: 'Playfair Display', serif;
-      font-size: 1.6rem;
-      color: var(--white);
+      font-size: 1.4rem;
+      color: var(--cream);
       margin-bottom: 1rem;
     }
     .footer-brand p {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       line-height: 1.8;
+      color: var(--text-muted);
       font-weight: 300;
     }
     .footer h4 {
-      font-family: 'Playfair Display', serif;
-      color: var(--white);
-      font-size: 1.1rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--cream);
       margin-bottom: 1.25rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
     }
     .footer a {
       display: block;
-      color: rgba(255,255,255,0.6);
+      color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       margin-bottom: 0.6rem;
       transition: color 0.3s;
       font-weight: 300;
     }
     .footer a:hover { color: var(--gold); }
     .footer-bottom {
-      border-top: 1px solid rgba(255,255,255,0.08);
+      border-top: 1px solid rgba(255,255,255,0.06);
       padding-top: 2rem;
       display: flex;
       justify-content: space-between;
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.4);
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.25);
+      font-weight: 300;
     }
 
-    /* Animations */
-    .fade-up {
+    /* === REVEAL === */
+    .reveal {
       opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.8s ease;
+      transform: translateY(40px);
+      transition: all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* Mobile */
-    .mobile-toggle {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--ivory);
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-    .header.scrolled .mobile-toggle { color: var(--charcoal); }
-
+    /* === RESPONSIVE === */
     @media (max-width: 1024px) {
-      .products-grid { grid-template-columns: repeat(2, 1fr); }
-      .categories-grid { grid-template-columns: 1fr; }
-      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-      .services-grid { grid-template-columns: 1fr; }
+      .hero { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+      .hero-left { padding: 3rem 2rem; }
+      .hero-right { min-height: 50vh; }
+      .hero-right::after { background: linear-gradient(0deg, var(--charcoal) 0%, transparent 30%); }
+      .edit-grid { grid-template-columns: 1fr; }
+      .editorial-grid { grid-template-columns: 1fr 1fr; }
+      .editorial-grid .wide { grid-column: span 2; }
+      .spotlight { grid-template-columns: 1fr; }
+      .spotlight-image { height: 350px; }
+      .spotlight-image::after { background: linear-gradient(0deg, var(--charcoal) 0%, transparent 60%); }
+      .spotlight-content { padding: 2.5rem; }
+      .about-compact { grid-template-columns: 1fr; gap: 2rem; }
+      .services-strip { grid-template-columns: repeat(3, 1fr); }
+      .service-item:nth-child(3) { border-right: none; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
-      .insta-grid { grid-template-columns: repeat(2, 1fr); }
+      .insta-strip { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 768px) {
       .header-nav { display: none; }
       .mobile-toggle { display: block; }
-      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-      .section { padding: 3rem 0; }
-      .hero { min-height: 600px; }
-      .section-title { font-size: 2rem; }
+      .header { padding: 1rem 1.5rem; }
+      .section { padding: 4rem 0; }
+      .editorial-grid { grid-template-columns: 1fr; }
+      .editorial-grid .wide { grid-column: span 1; }
+      .editorial-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .editorial-header h2 { font-size: 2rem; }
+      .services-strip { grid-template-columns: 1fr 1fr; }
+      .service-item:nth-child(2) { border-right: none; }
       .footer-grid { grid-template-columns: 1fr; }
+      .mini-grid { grid-template-columns: 1fr; }
+      .hero-scroll { display: none; }
     }
   </style>
 </head>
@@ -546,372 +642,301 @@
 
   <!-- Header -->
   <header class="header" id="header">
-    <a href="#" class="header-logo">Amora Imani</a>
+    <a href="#" class="header-logo"><img src="amora-imani-logo.png" alt="Amora Imani"></a>
     <nav class="header-nav">
-      <a href="#new">What's New</a>
-      <a href="#shop">Shop</a>
-      <a href="#about">About</a>
+      <a href="#edit">The Edit</a>
+      <a href="#new">New In</a>
+      <a href="#jewellery">Jewellery</a>
       <a href="#sale">Sale</a>
-      <a href="#contact">Contact</a>
+      <a href="#about">About</a>
     </nav>
     <div class="header-actions">
       <a href="#">&#x1F50D;</a>
-      <a href="#" class="cart-icon">&#x1F6D2; <span class="cart-count">0</span></a>
+      <a href="#">
+        &#x1F6D2;
+        <span class="cart-count">0</span>
+      </a>
       <button class="mobile-toggle" id="mobileToggle">&#x2630;</button>
     </div>
   </header>
 
-  <!-- Hero -->
+  <!-- Hero — Split Layout -->
   <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <p class="subtitle">London · Est. 2020</p>
-      <h1>Redefining<br>Luxury Fashion</h1>
-      <p>Figure-flattering designs, body-contouring fabrications, and exquisite embellishments for the modern, empowered woman.</p>
-      <a href="#shop" class="btn btn-white">Explore Collection</a>
+    <div class="hero-left">
+      <p class="overline">London · Est. 2020</p>
+      <h1>Confidence<br>That <em>Commands</em><br>The Room</h1>
+      <p>Figure-flattering designs, body-contouring fabrications, and exquisite embellishments for the modern woman who demands more from fashion.</p>
+      <a href="#edit" class="btn">Explore the Edit &rarr;</a>
+      <div class="hero-scroll">
+        <span></span> Scroll
+      </div>
+    </div>
+    <div class="hero-right">
+      <img src="https://amoraimani.com/wp-content/uploads/2025/07/Orange-Modern-Coastal-Boutique-Shopify-Store-Blog-Banner-.png" alt="Amora Imani" loading="eager">
     </div>
   </section>
 
   <!-- Marquee -->
-  <div class="marquee">
-    <div class="marquee-inner">
+  <div class="marquee-bar">
+    <div class="marquee-track">
       <span>Free Delivery on Orders of £150 or Over</span>
-      <span>|</span>
+      <span>✦</span>
       <span>Bespoke Custom Gowns Made to Order</span>
-      <span>|</span>
-      <span>Secure Shopping</span>
-      <span>|</span>
-      <span>Worldwide Shipping</span>
-      <span>|</span>
+      <span>✦</span>
+      <span>Worldwide Shipping — Fully Insured</span>
+      <span>✦</span>
+      <span>Knightsbridge, London Boutique</span>
+      <span>✦</span>
       <span>Free Delivery on Orders of £150 or Over</span>
-      <span>|</span>
+      <span>✦</span>
       <span>Bespoke Custom Gowns Made to Order</span>
-      <span>|</span>
-      <span>Secure Shopping</span>
-      <span>|</span>
-      <span>Worldwide Shipping</span>
+      <span>✦</span>
+      <span>Worldwide Shipping — Fully Insured</span>
+      <span>✦</span>
+      <span>Knightsbridge, London Boutique</span>
+      <span>✦</span>
     </div>
   </div>
 
-  <!-- Categories -->
-  <section class="section" id="shop">
-    <div class="container">
-      <p class="subtitle">Collections</p>
-      <h2 class="section-title">Shop by Category</h2>
-      <p class="section-desc">From stunning occasion wear to exquisite jewellery, discover our curated collections.</p>
-      <div class="categories-grid fade-up">
-        <div class="cat-card">
-          <img src="https://amoraimani.com/wp-content/uploads/2021/10/amoraimani-dresses-1199x800.jpg" alt="Dresses" loading="lazy">
-          <div class="cat-card-overlay"></div>
-          <div class="cat-card-content">
-            <h3>Dresses</h3>
-            <span>Wedding · Party · Evening · Bridesmaid</span>
-          </div>
+  <!-- The Edit — Asymmetrical Categories -->
+  <section class="section" id="edit" style="padding-bottom: 0;">
+    <div class="container" style="margin-bottom: 2rem;">
+      <p class="overline">Curated for You</p>
+    </div>
+  </section>
+  <div class="edit-grid reveal">
+    <div class="edit-feature">
+      <img src="https://amoraimani.com/wp-content/uploads/2021/10/amoraimani-dresses-1199x800.jpg" alt="Dresses" loading="lazy">
+      <div class="overlay"></div>
+      <div class="info">
+        <h3>Dresses</h3>
+        <span>Wedding · Party · Evening · Bridesmaid</span>
+      </div>
+    </div>
+    <div class="edit-side">
+      <div class="edit-feature">
+        <img src="https://amoraimani.com/wp-content/uploads/2020/10/IMG_20190822_163831_Bokeh.jpg" alt="Jewellery" loading="lazy">
+        <div class="overlay"></div>
+        <div class="info">
+          <h3>Jewellery</h3>
+          <span>Rings · Necklaces · Earrings</span>
         </div>
-        <div class="cat-card">
-          <img src="https://amoraimani.com/wp-content/uploads/2020/10/IMG_20190822_163831_Bokeh.jpg" alt="Jewellery" loading="lazy">
-          <div class="cat-card-overlay"></div>
-          <div class="cat-card-content">
-            <h3>Jewellery</h3>
-            <span>Rings · Necklaces · Bracelets · Earrings</span>
-          </div>
-        </div>
-        <div class="cat-card">
-          <img src="https://amoraimani.com/wp-content/uploads/2021/10/paris-fashion-week-2-534x800.jpg" alt="Made to Order" loading="lazy">
-          <div class="cat-card-overlay"></div>
-          <div class="cat-card-content">
-            <h3>Made to Order</h3>
-            <span>Bespoke Gowns · Custom Designs</span>
-          </div>
+      </div>
+      <div class="edit-feature">
+        <img src="https://amoraimani.com/wp-content/uploads/2021/10/paris-fashion-week-2-534x800.jpg" alt="Made to Order" loading="lazy">
+        <div class="overlay"></div>
+        <div class="info">
+          <h3>Made to Order</h3>
+          <span>Bespoke Gowns · Custom Design</span>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Featured Products -->
-  <section class="section" style="background: var(--white);" id="new">
+  <!-- New In — Editorial Product Grid -->
+  <section class="section" id="new">
     <div class="container">
-      <p class="subtitle">What's New</p>
-      <h2 class="section-title">Latest Arrivals</h2>
-      <p class="section-desc">Discover our most recent additions — luxury watches, fine jewellery, and stunning dresses.</p>
-      <div class="products-grid fade-up">
-        <div class="product-card">
-          <div class="product-image">
-            <span class="product-badge">Sale</span>
-            <img src="https://amoraimani.com/wp-content/uploads/2026/04/Image-3-2-1024x1024.jpeg" alt="Brietling Superocean 44" loading="lazy">
-          </div>
-          <div class="product-info">
-            <p class="category">Watches</p>
+      <div class="editorial-header reveal">
+        <h2>New <em>Arrivals</em> —<br>The Latest Edit</h2>
+        <a href="https://amoraimani.com/shop/" class="btn btn-outline" target="_blank">View All &rarr;</a>
+      </div>
+      <div class="editorial-grid reveal">
+        <div class="ed-card wide">
+          <img class="ed-card-img-1" src="https://amoraimani.com/wp-content/uploads/2026/04/Image-3-2-1024x1024.jpeg" alt="Brietling Superocean 44" loading="lazy">
+          <span class="badge">Sale</span>
+          <div class="meta">
+            <p class="tag">Watches</p>
             <h4>Brietling Superocean 44</h4>
-            <p class="price"><span class="old">£3,999</span>£2,999</p>
+            <p class="price"><span class="old">£3,999</span> £2,999</p>
           </div>
         </div>
-        <div class="product-card">
-          <div class="product-image">
-            <span class="product-badge">Sale</span>
-            <img src="https://amoraimani.com/wp-content/uploads/2026/04/Image-1024x1024.jpeg" alt="Tag Heuer Bamford Watch" loading="lazy">
-          </div>
-          <div class="product-info">
-            <p class="category">Watches</p>
-            <h4>Tag Heuer Bamford Watch</h4>
-            <p class="price"><span class="old">£1,400</span>£799</p>
+        <div class="ed-card">
+          <img class="ed-card-img-portrait" src="https://amoraimani.com/wp-content/uploads/2026/04/Image-1024x1024.jpeg" alt="Tag Heuer Bamford Watch" loading="lazy">
+          <span class="badge">Sale</span>
+          <div class="meta">
+            <p class="tag">Watches</p>
+            <h4>Tag Heuer Bamford</h4>
+            <p class="price"><span class="old">£1,400</span> £799</p>
           </div>
         </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="https://amoraimani.com/wp-content/uploads/2022/08/Facetune-09-08-2022-17-40-49-scaled-300x491.jpg" alt="Aurora" loading="lazy">
-          </div>
-          <div class="product-info">
-            <p class="category">Dresses</p>
+        <div class="ed-card">
+          <img class="ed-card-img-portrait" src="https://amoraimani.com/wp-content/uploads/2022/08/Facetune-09-08-2022-17-40-49-scaled-300x491.jpg" alt="Aurora Dress" loading="lazy">
+          <div class="meta">
+            <p class="tag">Dresses</p>
             <h4>Aurora</h4>
             <p class="price">£450</p>
           </div>
         </div>
-        <div class="product-card">
-          <div class="product-image">
-            <span class="product-badge">Sale</span>
-            <img src="https://amoraimani.com/wp-content/uploads/2024/07/cit1-300x300.jpg" alt="7.59ct Citrine Diamond Ring" loading="lazy">
-          </div>
-          <div class="product-info">
-            <p class="category">Jewellery</p>
-            <h4>7.59ct Citrine Diamond Ring</h4>
-            <p class="price"><span class="old">£2,699</span>£2,149</p>
+        <div class="ed-card">
+          <img class="ed-card-img-1" src="https://amoraimani.com/wp-content/uploads/2024/07/cit1-300x300.jpg" alt="Citrine Diamond Ring" loading="lazy">
+          <span class="badge">Sale</span>
+          <div class="meta">
+            <p class="tag">Jewellery</p>
+            <h4>Citrine Diamond Ring 14ct</h4>
+            <p class="price"><span class="old">£2,699</span> £2,149</p>
           </div>
         </div>
-        <div class="product-card">
-          <div class="product-image">
-            <span class="product-badge">Sale</span>
-            <img src="https://amoraimani.com/wp-content/uploads/2025/12/Image-7-1024x1024.jpeg" alt="Tag Heuer Red Bull F1 Watch" loading="lazy">
-          </div>
-          <div class="product-info">
-            <p class="category">Watches</p>
+        <div class="ed-card">
+          <img class="ed-card-img-portrait" src="https://amoraimani.com/wp-content/uploads/2025/12/Image-7-1024x1024.jpeg" alt="Tag Heuer F1" loading="lazy">
+          <span class="badge">Sale</span>
+          <div class="meta">
+            <p class="tag">Watches</p>
             <h4>Tag Heuer Red Bull F1</h4>
-            <p class="price"><span class="old">£1,999</span>£899</p>
+            <p class="price"><span class="old">£1,999</span> £899</p>
           </div>
         </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="https://amoraimani.com/wp-content/uploads/2023/10/IMG_3099-scaled-819x1024.jpg" alt="Zelda" loading="lazy">
-          </div>
-          <div class="product-info">
-            <p class="category">Bridesmaid</p>
+        <div class="ed-card wide">
+          <img class="ed-card-img-1" src="https://amoraimani.com/wp-content/uploads/2023/10/IMG_3099-scaled-819x1024.jpg" alt="Zelda" loading="lazy">
+          <div class="meta">
+            <p class="tag">Bridesmaid</p>
             <h4>Zelda</h4>
             <p class="price">£600</p>
           </div>
         </div>
-        <div class="product-card">
-          <div class="product-image">
-            <span class="product-badge">Sale</span>
-            <img src="https://amoraimani.com/wp-content/uploads/2025/06/tag-ladies-steel-300x300.jpg" alt="Tag Heuer Ladies Diamond Watch" loading="lazy">
-          </div>
-          <div class="product-info">
-            <p class="category">Watches</p>
-            <h4>Tag Heuer Ladies Diamond</h4>
-            <p class="price"><span class="old">£3,999</span>£1,999</p>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="https://amoraimani.com/wp-content/uploads/2022/08/MGM6293-scaled-300x450.jpg" alt="Layla" loading="lazy">
-          </div>
-          <div class="product-info">
-            <p class="category">Dresses</p>
-            <h4>Layla</h4>
-            <p class="price">£300</p>
-          </div>
-        </div>
-      </div>
-      <div style="text-align: center; margin-top: 3rem;">
-        <a href="https://amoraimani.com/shop/" class="btn" target="_blank">View All Products</a>
       </div>
     </div>
   </section>
 
-  <!-- Jewellery Collection -->
-  <section class="section">
-    <div class="container">
-      <p class="subtitle">DS Jewellery</p>
-      <h2 class="section-title">Fine Jewellery Collection</h2>
-      <p class="section-desc">Exquisite pieces crafted with precision — from citrine and ruby to Australian opal and diamonds.</p>
-      <div class="products-grid fade-up">
-        <div class="product-card">
-          <div class="product-image">
-            <img src="https://amoraimani.com/wp-content/uploads/2023/07/TheMYSTICRinge-300x300.jpeg" alt="The Mystic Ring" loading="lazy">
+  <!-- Jewellery Spotlight -->
+  <section class="section" id="jewellery" style="padding: 0;">
+    <div class="spotlight reveal">
+      <div class="spotlight-image">
+        <img src="https://amoraimani.com/wp-content/uploads/2020/10/IMG_20190822_163008_Bokeh.jpg" alt="DS Jewellery" loading="lazy">
+      </div>
+      <div class="spotlight-content">
+        <p class="overline">DS Jewellery</p>
+        <h2>Fine Jewellery,<br>Uncompromising Craft</h2>
+        <p>Exquisite gemstones set in precious metals — from citrine and ruby to Australian opal and diamonds. Each piece is a statement.</p>
+        <div class="mini-grid">
+          <div class="mini-item">
+            <span>The Mystic Ring</span>
+            <strong>£124</strong>
           </div>
-          <div class="product-info">
-            <p class="category">Jewellery</p>
-            <h4>The Mystic Ring</h4>
-            <p class="price">£124</p>
+          <div class="mini-item">
+            <span>1.25ct Ruby 18K Gold</span>
+            <strong>£5,999</strong>
           </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="https://amoraimani.com/wp-content/uploads/2023/07/image-2023-07-02T195039.445-300x300.jpg" alt="1.25ct Ruby 18K Gold" loading="lazy">
+          <div class="mini-item">
+            <span>7.59ct Citrine Ring</span>
+            <strong>£2,149 <span style="color: var(--text-muted); text-decoration: line-through; font-size: 0.75rem;">£2,699</span></strong>
           </div>
-          <div class="product-info">
-            <p class="category">Jewellery</p>
-            <h4>1.25ct Ruby 18K Gold</h4>
-            <p class="price">£5,999</p>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <span class="product-badge">Sale</span>
-            <img src="https://amoraimani.com/wp-content/uploads/2024/07/cit3-300x300.jpg" alt="Citrine Diamond Ring" loading="lazy">
-          </div>
-          <div class="product-info">
-            <p class="category">Jewellery</p>
-            <h4>Citrine Diamond Ring 14ct</h4>
-            <p class="price"><span class="old">£2,699</span>£2,149</p>
+          <div class="mini-item">
+            <span>Citrine Ring 18k Gold</span>
+            <strong>£1,899 <span style="color: var(--text-muted); text-decoration: line-through; font-size: 0.75rem;">£2,300</span></strong>
           </div>
         </div>
-        <div class="product-card">
-          <div class="product-image">
-            <span class="product-badge">Sale</span>
-            <img src="https://amoraimani.com/wp-content/uploads/2022/07/IMG_4501-1-scaled-300x400.jpg" alt="Citrine Ring 18k" loading="lazy">
-          </div>
-          <div class="product-info">
-            <p class="category">Jewellery</p>
-            <h4>Citrine Ring 18k Yellow Gold</h4>
-            <p class="price"><span class="old">£2,300</span>£1,899</p>
-          </div>
-        </div>
+        <a href="https://amoraimani.com/shop/" class="btn btn-gold" style="margin-top: 1.5rem; align-self: flex-start;" target="_blank">Shop All Jewellery &rarr;</a>
       </div>
     </div>
   </section>
 
-  <!-- Sale Banner -->
-  <section class="sale-banner" id="sale">
+  <!-- Quote -->
+  <section class="quote-section reveal">
     <div class="container">
-      <p class="subtitle">Limited Time</p>
+      <blockquote>"The epitome of accessible aspiration — statement designs and iconic silhouettes reimagined for the modern, empowered woman who is as sassy and sophisticated as she is sexy."</blockquote>
+      <cite>— Amora Imani, Founder</cite>
+    </div>
+  </section>
+
+  <!-- Sale -->
+  <section class="sale" id="sale">
+    <div class="content reveal">
+      <p class="overline">Limited Time</p>
       <h2>Enjoy 20% Off</h2>
-      <p>Shop our sale collection — luxury fashion at exceptional prices.</p>
-      <a href="https://amoraimani.com/product-category/sale/" class="btn btn-gold" target="_blank">Shop Sale</a>
+      <p>Luxury fashion at exceptional prices. Shop the sale before it's gone.</p>
+      <a href="https://amoraimani.com/product-category/sale/" class="btn" target="_blank">Shop the Sale</a>
     </div>
   </section>
 
-  <!-- About -->
+  <!-- About + Services -->
   <section class="section" id="about">
     <div class="container">
-      <div class="about-grid fade-up">
+      <div class="about-compact reveal">
+        <img src="https://amoraimani.com/wp-content/uploads/2020/07/about-us-picture-539x800.jpg" alt="About Amora Imani" loading="lazy">
         <div>
-          <img src="https://amoraimani.com/wp-content/uploads/2020/07/about-us-picture-539x800.jpg" alt="About Amora Imani" class="about-image">
-        </div>
-        <div class="about-content">
-          <p class="subtitle">Our Story</p>
+          <p class="overline">Knightsbridge, London</p>
           <h2>Welcome to Our World</h2>
-          <p>We're Amora Imani, the go-to online destination for the confident, glamorous, fashion-savvy girl in search of that something extra special. Figure-flattering designs, body-contouring fabrications and quality are always at the heart of our brand.</p>
-          <p>Amora Imani is renowned for its statement designs, iconic silhouettes and exquisite embellishments that are made to be seen. The team prides itself on possessing a thorough understanding of composition, form and fit.</p>
-          <p>Amora Imani is the epitome of accessible aspiration: statement designs and iconic silhouettes are reimagined in contemporary fabrications and luxury embellishments for the modern, empowered woman who is as sassy and sophisticated as she is sexy.</p>
-          <a href="https://amoraimani.com/about-us/" class="btn" style="margin-top: 1.5rem;" target="_blank">Read More</a>
+          <p>We're the go-to destination for the confident, glamorous, fashion-savvy woman in search of that something extra special. Figure-flattering designs, body-contouring fabrications and quality are always at the heart of our brand.</p>
+          <p>Renowned for statement designs, iconic silhouettes and exquisite embellishments — Amora Imani is where luxury meets attitude.</p>
+          <a href="https://amoraimani.com/about-us/" class="btn btn-outline" style="margin-top: 0.5rem;" target="_blank">Our Story &rarr;</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Services -->
-  <section class="section" style="background: var(--white);">
-    <div class="container">
-      <p class="subtitle">Why Shop With Us</p>
-      <h2 class="section-title">The Amora Imani Experience</h2>
-      <p class="section-desc">Luxury service from the moment you browse to the moment your order arrives.</p>
-      <div class="services-grid fade-up">
-        <div class="service-card">
-          <span class="icon">&#x1F6CD;</span>
-          <h4>Quick Shopping</h4>
-          <p>Complete your purchase with one-click to buy now.</p>
-        </div>
-        <div class="service-card">
-          <span class="icon">&#x1F4E6;</span>
-          <h4>Secure Shipping</h4>
-          <p>We ship with trusted providers internationally.</p>
-        </div>
-        <div class="service-card">
-          <span class="icon">&#x1F3AA;</span>
-          <h4>Pop-Up Locations</h4>
-          <p>Find us at a secret location to shop our beautiful collection.</p>
-        </div>
-        <div class="service-card">
-          <span class="icon">&#x1F469;&#x200D;&#x1F4BB;</span>
-          <h4>Sell With Us</h4>
-          <p>You can now sell your products through our marketplace.</p>
-        </div>
-        <div class="service-card">
-          <span class="icon">&#x1F381;</span>
-          <h4>Rewards Program</h4>
-          <p>Get rewarded when you sign up to our newsletter.</p>
-        </div>
-        <div class="service-card">
-          <span class="icon">&#x1F511;</span>
-          <h4>Safe Pay</h4>
-          <p>Shop with confidence with secure payment options.</p>
-        </div>
-      </div>
+  <!-- Services Strip -->
+  <div class="services-strip">
+    <div class="service-item">
+      <span class="icon">&#x1F6CD;</span>
+      <h4>Quick Shop</h4>
+      <p>One-click checkout</p>
     </div>
-  </section>
-
-  <!-- Instagram -->
-  <section class="section" style="padding-bottom: 0;">
-    <div class="container">
-      <p class="subtitle">Follow Us</p>
-      <h2 class="section-title">@amoraimani</h2>
-      <p class="section-desc">Follow us on Instagram for the latest drops, style inspiration, and behind-the-scenes.</p>
+    <div class="service-item">
+      <span class="icon">&#x1F4E6;</span>
+      <h4>Secure Shipping</h4>
+      <p>Worldwide insured</p>
     </div>
-  </section>
-  <div class="insta-grid">
-    <div class="insta-item">
-      <img src="https://amoraimani.com/wp-content/uploads/2021/10/amoraimani-dresses-1199x800.jpg" alt="" loading="lazy">
+    <div class="service-item">
+      <span class="icon">&#x1F3AA;</span>
+      <h4>Pop-Up Locations</h4>
+      <p>Secret London spots</p>
     </div>
-    <div class="insta-item">
-      <img src="https://amoraimani.com/wp-content/uploads/2020/10/IMG_20190822_163831_Bokeh.jpg" alt="" loading="lazy">
+    <div class="service-item">
+      <span class="icon">&#x1F469;&#x200D;&#x1F4BB;</span>
+      <h4>Sell With Us</h4>
+      <p>Join our marketplace</p>
     </div>
-    <div class="insta-item">
-      <img src="https://amoraimani.com/wp-content/uploads/2022/08/Facetune-09-08-2022-14-51-22-scaled.jpg" alt="" loading="lazy">
+    <div class="service-item">
+      <span class="icon">&#x1F381;</span>
+      <h4>Rewards</h4>
+      <p>Newsletter perks</p>
     </div>
-    <div class="insta-item">
-      <img src="https://amoraimani.com/wp-content/uploads/2020/10/IMG_20190822_163008_Bokeh.jpg" alt="" loading="lazy">
-    </div>
-    <div class="insta-item">
-      <img src="https://amoraimani.com/wp-content/uploads/2021/02/sale-slider3.jpg" alt="" loading="lazy">
-    </div>
-    <div class="insta-item">
-      <img src="https://amoraimani.com/wp-content/uploads/2020/07/dress043.jpg" alt="" loading="lazy">
-    </div>
-    <div class="insta-item">
-      <img src="https://amoraimani.com/wp-content/uploads/2020/12/Hef3bd16787d94737a6bcb989f492dc70s.jpg" alt="" loading="lazy">
-    </div>
-    <div class="insta-item">
-      <img src="https://amoraimani.com/wp-content/uploads/2020/11/HTB1jClZHFXXXXX3aXXXq6xXFXXXV-1.jpg" alt="" loading="lazy">
+    <div class="service-item">
+      <span class="icon">&#x1F511;</span>
+      <h4>Safe Pay</h4>
+      <p>Encrypted checkout</p>
     </div>
   </div>
 
+  <!-- Instagram -->
+  <div class="insta-strip">
+    <div class="insta-item"><img src="https://amoraimani.com/wp-content/uploads/2021/10/amoraimani-dresses-1199x800.jpg" alt="" loading="lazy"></div>
+    <div class="insta-item"><img src="https://amoraimani.com/wp-content/uploads/2020/10/IMG_20190822_163831_Bokeh.jpg" alt="" loading="lazy"></div>
+    <div class="insta-item"><img src="https://amoraimani.com/wp-content/uploads/2022/08/Facetune-09-08-2022-14-51-22-scaled.jpg" alt="" loading="lazy"></div>
+    <div class="insta-item"><img src="https://amoraimani.com/wp-content/uploads/2020/10/IMG_20190822_163008_Bokeh.jpg" alt="" loading="lazy"></div>
+    <div class="insta-item"><img src="https://amoraimani.com/wp-content/uploads/2021/02/sale-slider3.jpg" alt="" loading="lazy"></div>
+    <div class="insta-item"><img src="https://amoraimani.com/wp-content/uploads/2020/07/dress043.jpg" alt="" loading="lazy"></div>
+    <div class="insta-item"><img src="https://amoraimani.com/wp-content/uploads/2020/12/Hef3bd16787d94737a6bcb989f492dc70s.jpg" alt="" loading="lazy"></div>
+    <div class="insta-item"><img src="https://amoraimani.com/wp-content/uploads/2020/11/HTB1jClZHFXXXXX3aXXXq6xXFXXXV-1.jpg" alt="" loading="lazy"></div>
+  </div>
+  <div style="text-align: center; padding: 2rem 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+    <a href="http://instagram.com/amoraimani" target="_blank" style="color: var(--gold); text-decoration: none; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;">Follow @amoraimani &rarr;</a>
+  </div>
+
   <!-- Footer -->
-  <footer class="footer" id="contact">
+  <footer class="footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <h3>Amora Imani</h3>
-          <p>The go-to online destination for the confident, glamorous, fashion-savvy girl in search of that something extra special. Based in Knightsbridge, London.</p>
-          <p style="margin-top: 1rem; font-size: 0.85rem;">
-            &#x2709; sales@amoraimani.com
-          </p>
+          <img src="amora-imani-logo.png" alt="Amora Imani" style="height: 32px; width: auto; display: block; margin-bottom: 1rem; filter: brightness(0) invert(1);">
+          <p>The go-to online destination for the confident, glamorous, fashion-savvy woman. Based in Knightsbridge, London.</p>
+          <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--gold-dim);">sales@amoraimani.com</p>
         </div>
         <div>
           <h4>Quick Links</h4>
-          <a href="https://amoraimani.com/shop/">Catalogue</a>
-          <a href="https://amoraimani.com/store-listing/">Brands</a>
-          <a href="https://amoraimani.com/about-us/">About Us</a>
-          <a href="https://amoraimani.com/gifts/">Gifts</a>
-          <a href="https://amoraimani.com/marketplace-intro/">Marketplace</a>
+          <a href="https://amoraimani.com/shop/" target="_blank">Catalogue</a>
+          <a href="https://amoraimani.com/store-listing/" target="_blank">Brands</a>
+          <a href="https://amoraimani.com/about-us/" target="_blank">About Us</a>
+          <a href="https://amoraimani.com/gifts/" target="_blank">Gifts</a>
+          <a href="https://amoraimani.com/marketplace-intro/" target="_blank">Marketplace</a>
         </div>
         <div>
           <h4>Customer Care</h4>
-          <a href="https://amoraimani.com/delivery-returns/">Delivery & Returns</a>
-          <a href="https://amoraimani.com/shipping-info/">Shipping Information</a>
-          <a href="https://amoraimani.com/privacy-policy/">Privacy Policy</a>
-          <a href="https://amoraimani.com/terms-conditions/">Terms & Conditions</a>
-          <a href="https://amoraimani.com/start-selling-with-us/">Become a Vendor</a>
+          <a href="https://amoraimani.com/delivery-returns/" target="_blank">Delivery & Returns</a>
+          <a href="https://amoraimani.com/shipping-info/" target="_blank">Shipping</a>
+          <a href="https://amoraimani.com/privacy-policy/" target="_blank">Privacy</a>
+          <a href="https://amoraimani.com/terms-conditions/" target="_blank">Terms</a>
+          <a href="https://amoraimani.com/start-selling-with-us/" target="_blank">Become a Vendor</a>
         </div>
         <div>
           <h4>Connect</h4>
@@ -921,41 +946,41 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span>&copy; 2026 Amora Imani. All rights reserved.</span>
-        <span>Designed with elegance in London</span>
+        <span>&copy; 2026 Amora Imani</span>
+        <span>Made in London</span>
       </div>
     </div>
   </footer>
 
   <script>
-    // Header scroll
+    // Scroll-aware header
     const header = document.getElementById('header');
-    let lastScroll = 0;
     window.addEventListener('scroll', () => {
-      const y = window.scrollY;
-      if (y > 80) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
-      lastScroll = y;
+      header.classList.toggle('scrolled', window.scrollY > 80);
     });
 
-    // Fade-up on scroll
+    // Reveal on scroll
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-    // Mobile toggle
-    document.getElementById('mobileToggle').addEventListener('click', () => {
-      const nav = document.querySelector('.header-nav');
+    // Mobile nav toggle
+    const toggle = document.getElementById('mobileToggle');
+    const nav = document.querySelector('.header-nav');
+    toggle.addEventListener('click', () => {
       nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+      if (nav.style.display === 'flex') {
+        nav.style.flexDirection = 'column';
+        nav.style.position = 'absolute';
+        nav.style.top = '100%';
+        nav.style.left = '0';
+        nav.style.right = '0';
+        nav.style.background = 'var(--ink)';
+        nav.style.padding = '2rem';
+        nav.style.gap = '1.5rem';
+        nav.style.alignItems = 'flex-start';
+      }
     });
   </script>
 

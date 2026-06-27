@@ -78,7 +78,7 @@
     .nav-left a:hover { color: var(--cognac); border-bottom-color: var(--cognac); }
     .logo { justify-self: center; text-decoration: none; }
     .logo img { height: 28px; width: auto; display: block; }
-    .nav-right { justify-self: end; display: flex; gap: 1.3rem; align-items: center; }
+    .nav-right { justify-self: end; display: flex; gap: 1.3rem; align-items: center; position: relative; }
     .nav-right a {
       color: var(--ink); text-decoration: none; font-size: 0.9rem;
       transition: color 0.3s; position: relative;
@@ -93,6 +93,55 @@
     }
     .mobile-toggle { display: none; background: none; border: none; color: var(--ink); font-size: 1.2rem; cursor: pointer; }
 
+    /* === MINI CART === */
+    .mini-cart {
+      position: absolute; top: 100%; right: 0; width: 340px;
+      background: var(--paper); border: 1px solid var(--line);
+      border-top: 2px solid var(--cognac);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+      display: none; z-index: 1100; max-height: 70vh; overflow-y: auto;
+    }
+    .mini-cart.open { display: block; }
+    .mini-cart-header {
+      padding: 1rem 1.25rem; border-bottom: 1px solid var(--line-lt);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .mini-cart-header h4 { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--espresso); }
+    .mini-cart-close { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--taupe); }
+    .mini-cart-close:hover { color: var(--espresso); }
+    .mini-cart-items { padding: 0; list-style: none; }
+    .mini-cart-item {
+      display: grid; grid-template-columns: 50px 1fr auto;
+      gap: 0.85rem; padding: 1rem 1.25rem; align-items: center;
+      border-bottom: 1px solid var(--line-lt);
+    }
+    .mini-cart-item img { width: 50px; height: 65px; object-fit: cover; }
+    .mini-cart-item-info h5 { font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; font-weight: 500; color: var(--espresso); }
+    .mini-cart-item-info .variant { font-size: 0.65rem; color: var(--taupe); letter-spacing: 0.05em; }
+    .mini-cart-item-info .mc-price { font-size: 0.78rem; color: var(--cognac); font-weight: 500; margin-top: 0.15rem; }
+    .mini-cart-item-qty { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.3rem; }
+    .mini-cart-item-qty button {
+      width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--line);
+      background: var(--white); cursor: pointer; font-size: 0.6rem; display: flex;
+      align-items: center; justify-content: center; color: var(--ink);
+    }
+    .mini-cart-item-qty button:hover { border-color: var(--cognac); color: var(--cognac); }
+    .mini-cart-item-qty span { font-size: 0.72rem; min-width: 14px; text-align: center; }
+    .mini-cart-item-remove { background: none; border: none; color: var(--taupe); cursor: pointer; font-size: 0.8rem; align-self: flex-start; }
+    .mini-cart-item-remove:hover { color: #c0392b; }
+    .mini-cart-total {
+      padding: 1rem 1.25rem; display: flex; justify-content: space-between;
+      font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--espresso); font-weight: 500;
+    }
+    .mini-cart-checkout {
+      display: block; margin: 0 1.25rem 1.25rem; padding: 0.75rem; text-align: center;
+      background: var(--espresso); color: var(--white); text-decoration: none;
+      font-size: 0.64rem; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 500;
+      transition: background 0.3s;
+    }
+    .mini-cart-checkout:hover { background: var(--cognac); }
+    .mini-cart-empty { padding: 2rem 1.25rem; text-align: center; color: var(--taupe); font-size: 0.82rem; }
+
     /* === HERO CAMPAIGN === */
     .hero {
       position: relative;
@@ -100,13 +149,18 @@
       overflow: hidden;
       background: var(--espresso);
     }
-    .hero-img {
+    .hero-slide {
       position: absolute; inset: 0;
-      background: url('https://amoraimani.com/wp-content/uploads/2025/07/Orange-Modern-Coastal-Boutique-Shopify-Store-Blog-Banner-.png') center/cover no-repeat;
+      opacity: 0; transition: opacity 1.2s ease;
+    }
+    .hero-slide.active { opacity: 1; }
+    .hero-slide .hero-img {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center; background-repeat: no-repeat;
     }
     .hero-ov {
       position: absolute; inset: 0;
-      background: linear-gradient(180deg, rgba(42,37,32,0.15) 0%, transparent 35%, rgba(42,37,32,0.45) 100%);
+      background: linear-gradient(180deg, rgba(42,37,32,0.15) 0%, transparent 35%, rgba(42,37,32,0.55) 100%);
     }
     .hero-content {
       position: relative; z-index: 2;
@@ -210,18 +264,31 @@
       transition: transform 0.9s cubic-bezier(0.22,1,0.36,1);
     }
     .product:hover .product-img img { transform: scale(1.03); }
-    .product-img .add {
+    .product-img .add-layer {
       position: absolute; left: 0; right: 0; bottom: 0;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    .product:hover .product-img .add-layer { transform: translateY(0); }
+    .product-img .add-layer .size-select {
+      display: flex; background: var(--espresso); padding: 0.5rem 0.6rem; gap: 0.3rem; justify-content: center;
+    }
+    .product-img .add-layer .size-select button {
+      width: 32px; height: 28px; font-size: 0.55rem; font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.2); background: transparent; color: var(--white);
+      cursor: pointer; font-family: 'Inter', sans-serif; letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }
+    .product-img .add-layer .size-select button:hover { background: var(--cognac); border-color: var(--cognac); }
+    .product-img .add-layer .add {
       background: var(--espresso); color: var(--white);
       padding: 0.8rem; text-align: center;
       font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
-      transform: translateY(100%);
-      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
       border: none; cursor: pointer; width: 100%;
       font-family: 'Inter', sans-serif; font-weight: 500;
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
-    .product:hover .product-img .add { transform: translateY(0); }
-    .product-img .add:hover { background: var(--cognac); }
+    .product-img .add-layer .add:hover { background: var(--cognac); }
     .badge {
       position: absolute; top: 0.85rem; left: 0.85rem;
       font-size: 0.54rem; letter-spacing: 0.2em; text-transform: uppercase;
@@ -300,6 +367,135 @@
       transition: all 0.3s; font-family: 'Inter', sans-serif; font-weight: 500;
     }
     .tile .info .discover:hover { background: var(--white); color: var(--espresso); }
+
+    /* === EVENTS SECTION === */
+    .event-hero {
+      position: relative; min-height: 640px;
+      display: flex; align-items: center; overflow: hidden;
+      background: var(--espresso);
+    }
+    .event-hero-bg {
+      position: absolute; inset: 0;
+      background: url('https://amoraimani.com/wp-content/uploads/2026/05/WhatsApp-Image-2026-05-30-at-14.52.30.jpeg') center/cover no-repeat;
+    }
+    .event-hero-ov {
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(42,37,32,0.88) 0%, rgba(42,37,32,0.4) 60%, transparent);
+    }
+    .event-hero-content {
+      position: relative; z-index: 2;
+      max-width: 560px; padding: 0 2rem; color: var(--white);
+    }
+    .event-hero-content .kicker {
+      font-size: 0.6rem; letter-spacing: 0.28em;
+      text-transform: uppercase; color: var(--sand);
+      display: block; margin-bottom: 0.5rem;
+    }
+    .event-hero-content .date-badge {
+      display: inline-block; background: var(--cognac); color: var(--white);
+      font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase;
+      padding: 0.3rem 0.7rem; margin-bottom: 1rem; font-weight: 500;
+    }
+    .event-hero-content h2 {
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      margin-bottom: 0.75rem; line-height: 1.1;
+    }
+    .event-hero-content h2 em { font-style: italic; color: var(--sand); }
+    .event-hero-content p {
+      color: rgba(255,255,255,0.7); font-size: 0.92rem;
+      font-weight: 300; line-height: 1.8; margin-bottom: 1.5rem;
+    }
+    .event-hero-content .event-meta {
+      display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.75rem;
+    }
+    .event-hero-content .event-meta span {
+      font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); font-weight: 400;
+    }
+    .event-hero-content .event-meta strong {
+      display: block; color: var(--white); font-weight: 500;
+      font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+      letter-spacing: 0;
+    }
+    .event-hero-content .cta {
+      display: inline-block; padding: 0.9rem 2.2rem;
+      border: 1px solid rgba(255,255,255,0.5); color: var(--white);
+      text-decoration: none; font-size: 0.66rem;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      font-weight: 500; transition: all 0.3s; margin-right: 0.75rem; margin-bottom: 0.5rem;
+    }
+    .event-hero-content .cta:hover { background: var(--white); color: var(--espresso); }
+    .event-hero-content .cta-primary {
+      background: var(--cognac); border-color: var(--cognac);
+    }
+    .event-hero-content .cta-primary:hover { background: var(--white); color: var(--cognac); border-color: var(--white); }
+
+    .event-details {
+      background: var(--paper); padding: 5rem 0;
+    }
+    .event-details-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; max-width: 1200px; margin: 0 auto; padding: 0 2rem;
+    }
+    .event-details-content .kicker {
+      font-size: 0.66rem; letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--cognac); display: block; margin-bottom: 0.65rem;
+    }
+    .event-details-content h3 {
+      font-size: clamp(1.5rem, 2.5vw, 2rem); margin-bottom: 1.25rem;
+      color: var(--espresso); line-height: 1.2;
+    }
+    .event-details-content h3 em { font-style: italic; color: var(--cognac); }
+    .event-details-content p {
+      color: var(--ink); font-weight: 300; font-size: 0.92rem;
+      line-height: 1.9; margin-bottom: 1rem;
+    }
+    .event-highlights {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    }
+    .event-highlight {
+      padding: 1.25rem; border: 1px solid var(--line);
+      text-align: center;
+    }
+    .event-highlight .ic { font-size: 1.3rem; margin-bottom: 0.4rem; display: block; }
+    .event-highlight h5 {
+      font-family: 'Inter', sans-serif; font-size: 0.62rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--espresso); font-weight: 500; margin-bottom: 0.15rem;
+    }
+    .event-highlight p { font-size: 0.68rem; color: var(--taupe); margin: 0; line-height: 1.5; }
+    .event-details-sidebar {
+      border: 1px solid var(--line); padding: 2rem;
+      background: var(--bg); align-self: start; position: sticky; top: 90px;
+    }
+    .event-details-sidebar h4 {
+      font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--espresso);
+    }
+    .event-details-sidebar .price-range {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.5rem;
+      color: var(--cognac); margin-bottom: 1.25rem; display: block;
+    }
+    .event-details-sidebar .event-detail-row {
+      display: flex; justify-content: space-between; padding: 0.6rem 0;
+      border-bottom: 1px solid var(--line-lt); font-size: 0.78rem;
+    }
+    .event-details-sidebar .event-detail-row .label { color: var(--taupe); }
+    .event-details-sidebar .event-detail-row .value { color: var(--espresso); font-weight: 400; }
+    .event-ticket-select { margin: 1.25rem 0; }
+    .event-ticket-select select {
+      width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--line);
+      background: var(--white); font-family: 'Inter', sans-serif; font-size: 0.78rem;
+      color: var(--espresso); outline: none; cursor: pointer;
+    }
+    .event-ticket-select select:focus { border-color: var(--cognac); }
+    .event-book-btn {
+      width: 100%; padding: 0.85rem; text-align: center;
+      background: var(--cognac); color: var(--white); border: none;
+      font-size: 0.64rem; letter-spacing: 0.22em; text-transform: uppercase;
+      font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: background 0.3s;
+    }
+    .event-book-btn:hover { background: var(--cognac-dk); }
 
     /* === EDITORIAL CAMPAIGN === */
     .campaign {
@@ -559,6 +755,9 @@
       .footer-grid { grid-template-columns: 1fr 1fr; }
       .services { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
       .insta-grid { grid-template-columns: repeat(2, 1fr); }
+      .event-details-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .event-details-sidebar { position: static; }
+      .event-highlights { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 768px) {
       .nav-right a:not(.cart) { display: none; }
@@ -572,6 +771,9 @@
       .footer-bottom { flex-direction: column; }
       .utility { font-size: 0.55rem; padding: 0.4rem 1rem; }
       .utility .left { gap: 0.75rem; }
+      .mini-cart { width: 300px; right: -2rem; }
+      .event-highlights { grid-template-columns: 1fr; }
+      .event-hero-content .cta { display: block; margin-right: 0; }
     }
   </style>
 </head>
@@ -604,19 +806,52 @@
       <a href="#" aria-label="Search">&#x1F50D;</a>
       <a href="#" aria-label="Wishlist">&#x2661;</a>
       <a href="#" aria-label="Account">&#x1F464;</a>
-      <a href="#" class="cart" aria-label="Cart">&#x1F6D2;<span class="cart-count" id="cartCount">0</span></a>
+      <a href="#" class="cart" id="cartToggle" aria-label="Cart">&#x1F6D2;<span class="cart-count" id="cartCount">0</span></a>
       <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">&#x2630;</button>
+      <!-- Mini Cart -->
+      <div class="mini-cart" id="miniCart">
+        <div class="mini-cart-header">
+          <h4>Shopping Bag</h4>
+          <button class="mini-cart-close" id="miniCartClose">&times;</button>
+        </div>
+        <div id="miniCartItems"></div>
+        <div class="mini-cart-total" id="miniCartTotal" style="display:none;">
+          <span>Subtotal</span>
+          <span id="miniCartTotalAmount">£0</span>
+        </div>
+        <a href="https://amoraimani.com/cart/" class="mini-cart-checkout" id="miniCartCheckout" style="display:none;" target="_blank">View Bag & Checkout</a>
+      </div>
     </div>
   </header>
 
   <!-- Hero -->
-  <section class="hero">
-    <div class="hero-img"></div>
-    <div class="hero-ov"></div>
-    <div class="hero-content">
-      <span class="kicker">Autumn / Winter 2026</span>
-      <h1>The New <em>Season</em></h1>
-      <a href="#new" class="hero-cta">Discover the Collection</a>
+  <section class="hero" id="hero">
+    <div class="hero-slide active">
+      <div class="hero-img" style="background-image: url('https://amoraimani.com/wp-content/uploads/2025/07/Orange-Modern-Coastal-Boutique-Shopify-Store-Blog-Banner-.png');"></div>
+      <div class="hero-ov"></div>
+      <div class="hero-content">
+        <span class="kicker">Autumn / Winter 2026</span>
+        <h1>The New <em>Season</em></h1>
+        <a href="#new" class="hero-cta">Discover the Collection</a>
+      </div>
+    </div>
+    <div class="hero-slide">
+      <div class="hero-img" style="background-image: url('https://amoraimani.com/wp-content/uploads/2021/10/amoraimani-dresses-1199x800.jpg');"></div>
+      <div class="hero-ov"></div>
+      <div class="hero-content">
+        <span class="kicker">Evening & Occasion</span>
+        <h1>The Dress <em>Edit</em></h1>
+        <a href="#dresses" class="hero-cta">Explore Dresses</a>
+      </div>
+    </div>
+    <div class="hero-slide">
+      <div class="hero-img" style="background-image: url('https://amoraimani.com/wp-content/uploads/2020/10/IMG_20190822_163008_Bokeh.jpg');"></div>
+      <div class="hero-ov"></div>
+      <div class="hero-content">
+        <span class="kicker">By Appointment</span>
+        <h1>Bespoke <em>Couture</em></h1>
+        <a href="https://amoraimani.com/made-to-measure/" class="hero-cta" target="_blank">Book a Consultation</a>
+      </div>
     </div>
     <div class="hero-dots">
       <span class="active"></span><span></span><span></span>
@@ -642,67 +877,85 @@
     <div class="carousel-wrap reveal">
       <button class="carousel-arrow prev" onclick="scrollCarousel('new-carousel', -1)">&#x2039;</button>
       <div class="carousel" id="new-carousel">
-        <div class="product">
+        <div class="product" data-name="Brietling Superocean 44" data-price="2999" data-img="https://amoraimani.com/wp-content/uploads/2026/04/Image-3-2-1024x1024.jpeg">
           <div class="product-img">
             <span class="badge">Sale</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2026/04/Image-3-2-1024x1024.jpeg" alt="Brietling Superocean 44" loading="lazy">
-            <button class="add" onclick="addToCart('Brietling Superocean 44', 2999)">Add to Cart</button>
+            <div class="add-layer">
+              <div class="size-select" data-name="Brietling Superocean 44" data-price="2999"></div>
+              <button class="add" onclick="addToCart('Brietling Superocean 44', 2999)">Add to Cart</button>
+            </div>
           </div>
           <p class="product-cat">Watches</p>
           <h4>Brietling Superocean 44</h4>
           <p class="price"><span class="old">£3,999</span><span class="sale">£2,999</span></p>
         </div>
-        <div class="product">
+        <div class="product" data-name="Tag Heuer Bamford" data-price="799" data-img="https://amoraimani.com/wp-content/uploads/2026/04/Image-1024x1024.jpeg">
           <div class="product-img">
             <span class="badge">Sale</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2026/04/Image-1024x1024.jpeg" alt="Tag Heuer Bamford" loading="lazy">
-            <button class="add" onclick="addToCart('Tag Heuer Bamford', 799)">Add to Cart</button>
+            <div class="add-layer">
+              <div class="size-select" data-name="Tag Heuer Bamford" data-price="799"></div>
+              <button class="add" onclick="addToCart('Tag Heuer Bamford', 799)">Add to Cart</button>
+            </div>
           </div>
           <p class="product-cat">Watches</p>
           <h4>Tag Heuer Bamford</h4>
           <p class="price"><span class="old">£1,400</span><span class="sale">£799</span></p>
         </div>
-        <div class="product">
+        <div class="product" data-name="Aurora Dress" data-price="450" data-img="https://amoraimani.com/wp-content/uploads/2022/08/Facetune-09-08-2022-17-40-49-scaled.jpg">
           <div class="product-img">
             <span class="badge new">New</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2022/08/Facetune-09-08-2022-17-40-49-scaled.jpg" alt="Aurora Dress" loading="lazy">
-            <button class="add" onclick="addToCart('Aurora Dress', 450)">Add to Cart</button>
+            <div class="add-layer">
+              <div class="size-select" data-name="Aurora Dress" data-price="450"></div>
+              <button class="add" onclick="addToCart('Aurora Dress', 450)">Add to Cart</button>
+            </div>
           </div>
           <p class="product-cat">Dresses</p>
           <h4>Aurora</h4>
           <p class="price">£450</p>
         </div>
-        <div class="product">
+        <div class="product" data-name="7.59ct Citrine Ring" data-price="2149" data-img="https://amoraimani.com/wp-content/uploads/2024/07/cit1.jpg">
           <div class="product-img">
             <span class="badge">Sale</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2024/07/cit1.jpg" alt="Citrine Diamond Ring" loading="lazy">
-            <button class="add" onclick="addToCart('7.59ct Citrine Ring', 2149)">Add to Cart</button>
+            <div class="add-layer">
+              <div class="size-select" data-name="7.59ct Citrine Ring" data-price="2149"></div>
+              <button class="add" onclick="addToCart('7.59ct Citrine Ring', 2149)">Add to Cart</button>
+            </div>
           </div>
           <p class="product-cat">Jewellery</p>
           <h4>7.59ct Citrine Diamond Ring</h4>
           <p class="price"><span class="old">£2,699</span><span class="sale">£2,149</span></p>
         </div>
-        <div class="product">
+        <div class="product" data-name="Tag Heuer Red Bull F1" data-price="899" data-img="https://amoraimani.com/wp-content/uploads/2025/12/Image-7-1024x1024.jpeg">
           <div class="product-img">
             <span class="badge">Sale</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2025/12/Image-7-1024x1024.jpeg" alt="Tag Heuer F1" loading="lazy">
-            <button class="add" onclick="addToCart('Tag Heuer Red Bull F1', 899)">Add to Cart</button>
+            <div class="add-layer">
+              <div class="size-select" data-name="Tag Heuer Red Bull F1" data-price="899"></div>
+              <button class="add" onclick="addToCart('Tag Heuer Red Bull F1', 899)">Add to Cart</button>
+            </div>
           </div>
           <p class="product-cat">Watches</p>
           <h4>Tag Heuer Red Bull F1</h4>
           <p class="price"><span class="old">£1,999</span><span class="sale">£899</span></p>
         </div>
-        <div class="product">
+        <div class="product" data-name="Zelda Dress" data-price="600" data-img="https://amoraimani.com/wp-content/uploads/2023/10/IMG_3099-scaled-819x1024.jpg">
           <div class="product-img">
             <span class="badge new">New</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2023/10/IMG_3099-scaled-819x1024.jpg" alt="Zelda Dress" loading="lazy">
-            <button class="add" onclick="addToCart('Zelda Dress', 600)">Add to Cart</button>
+            <div class="add-layer">
+              <div class="size-select" data-name="Zelda Dress" data-price="600"></div>
+              <button class="add" onclick="addToCart('Zelda Dress', 600)">Add to Cart</button>
+            </div>
           </div>
           <p class="product-cat">Bridesmaid</p>
           <h4>Zelda</h4>
@@ -748,53 +1001,68 @@
     <div class="carousel-wrap reveal">
       <button class="carousel-arrow prev" onclick="scrollCarousel('best-carousel', -1)">&#x2039;</button>
       <div class="carousel" id="best-carousel">
-        <div class="product">
+        <div class="product" data-name="Tag Heuer Ladies Diamond" data-price="1999" data-img="https://amoraimani.com/wp-content/uploads/2025/06/tag-ladies-steel.jpg">
           <div class="product-img">
             <span class="badge">Sale</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2025/06/tag-ladies-steel.jpg" alt="Tag Heuer Ladies Diamond" loading="lazy">
-            <button class="add" onclick="addToCart('Tag Heuer Ladies Diamond', 1999)">Add to Cart</button>
+            <div class="add-layer">
+              <div class="size-select" data-name="Tag Heuer Ladies Diamond" data-price="1999"></div>
+              <button class="add" onclick="addToCart('Tag Heuer Ladies Diamond', 1999)">Add to Cart</button>
+            </div>
           </div>
           <p class="product-cat">Watches</p>
           <h4>Tag Heuer Ladies Diamond</h4>
           <p class="price"><span class="old">£3,999</span><span class="sale">£1,999</span></p>
         </div>
-        <div class="product">
+        <div class="product" data-name="The Mystic Ring" data-price="124" data-img="https://amoraimani.com/wp-content/uploads/2023/07/TheMYSTICRinge.jpeg">
           <div class="product-img">
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2023/07/TheMYSTICRinge.jpeg" alt="The Mystic Ring" loading="lazy">
-            <button class="add" onclick="addToCart('The Mystic Ring', 124)">Add to Cart</button>
+            <div class="add-layer">
+              <div class="size-select" data-name="The Mystic Ring" data-price="124"></div>
+              <button class="add" onclick="addToCart('The Mystic Ring', 124)">Add to Cart</button>
+            </div>
           </div>
           <p class="product-cat">Jewellery</p>
           <h4>The Mystic Ring</h4>
           <p class="price">£124</p>
         </div>
-        <div class="product">
+        <div class="product" data-name="Layla Dress" data-price="300" data-img="https://amoraimani.com/wp-content/uploads/2022/08/MGM6293-scaled.jpg">
           <div class="product-img">
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2022/08/MGM6293-scaled.jpg" alt="Layla Dress" loading="lazy">
-            <button class="add" onclick="addToCart('Layla Dress', 300)">Add to Cart</button>
+            <div class="add-layer">
+              <div class="size-select" data-name="Layla Dress" data-price="300"></div>
+              <button class="add" onclick="addToCart('Layla Dress', 300)">Add to Cart</button>
+            </div>
           </div>
           <p class="product-cat">Dresses</p>
           <h4>Layla</h4>
           <p class="price">£300</p>
         </div>
-        <div class="product">
+        <div class="product" data-name="Citrine Ring 14ct" data-price="2149" data-img="https://amoraimani.com/wp-content/uploads/2024/07/cit3.jpg">
           <div class="product-img">
             <span class="badge">Sale</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2024/07/cit3.jpg" alt="Citrine Ring 14ct" loading="lazy">
-            <button class="add" onclick="addToCart('Citrine Ring 14ct', 2149)">Add to Cart</button>
+            <div class="add-layer">
+              <div class="size-select" data-name="Citrine Ring 14ct" data-price="2149"></div>
+              <button class="add" onclick="addToCart('Citrine Ring 14ct', 2149)">Add to Cart</button>
+            </div>
           </div>
           <p class="product-cat">Jewellery</p>
           <h4>Citrine Diamond Ring 14ct</h4>
           <p class="price"><span class="old">£2,699</span><span class="sale">£2,149</span></p>
         </div>
-        <div class="product">
+        <div class="product" data-name="1.25ct Ruby 18K Gold" data-price="5999" data-img="https://amoraimani.com/wp-content/uploads/2023/07/image-2023-07-02T195039.445.jpeg">
           <div class="product-img">
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2023/07/image-2023-07-02T195039.445.jpeg" alt="1.25ct Ruby 18K Gold" loading="lazy">
-            <button class="add" onclick="addToCart('1.25ct Ruby 18K Gold', 5999)">Add to Cart</button>
+            <div class="add-layer">
+              <div class="size-select" data-name="1.25ct Ruby 18K Gold" data-price="5999"></div>
+              <button class="add" onclick="addToCart('1.25ct Ruby 18K Gold', 5999)">Add to Cart</button>
+            </div>
           </div>
           <p class="product-cat">Jewellery</p>
           <h4>1.25ct Ruby 18K Gold</h4>
@@ -815,6 +1083,78 @@
         <h2>Made to order,<br><em>made to be seen.</em></h2>
         <p>Bespoke custom gowns crafted to your requirements. From our Knightsbridge atelier to your most memorable occasions.</p>
         <a href="https://amoraimani.com/made-to-measure/" class="cta" target="_blank">Book a Consultation</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- === EVENTS SECTION === -->
+  <section id="events">
+    <div class="event-hero reveal">
+      <div class="event-hero-bg"></div>
+      <div class="event-hero-ov"></div>
+      <div style="position: relative; z-index: 2; width: 100%;">
+        <div class="event-hero-content">
+          <span class="kicker">Amora Imani Presents</span>
+          <div class="date-badge">London Fashion Week 2026</div>
+          <h2>The Peninsula —<br><em>London's Most Exclusive Event</em></h2>
+          <p>An unforgettable evening of fashion, mystery, and grandeur. Couture, immersive entertainment, elite networking, and a spectacular charity auction inspired by the elegance of ancient civilisations and modern icons.</p>
+          <div class="event-meta">
+            <span><strong>Saturday</strong>19 September 2026</span>
+            <span><strong>Time</strong>6:00 PM – Late</span>
+            <span><strong>Venue</strong>The Peninsula London</span>
+            <span><strong>Dress Code</strong>Black Tie · Couture</span>
+          </div>
+          <a href="#event-tickets" class="cta cta-primary">Secure Your Invitation</a>
+          <a href="https://amoraimani.com/product/the-peninsula-londons-most-exclusive-event/" class="cta" target="_blank">Learn More</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-details" id="event-tickets">
+      <div class="event-details-grid">
+        <div class="event-details-content">
+          <span class="kicker">The Experience</span>
+          <h3>A night of <em>couture</em>, mystery & grandeur</h3>
+          <p>Step through candlelit entrances into a world of gold, velvet, live performance, haute couture, and extraordinary atmosphere at one of London's most prestigious luxury hotels.</p>
+          <div class="event-highlights">
+            <div class="event-highlight">
+              <span class="ic">&#x1F463;</span>
+              <h5>Red Carpet</h5>
+              <p>Luxury arrival experience with exclusive photo moments</p>
+            </div>
+            <div class="event-highlight">
+              <span class="ic">&#x1F3AD;</span>
+              <h5>Fashion Presentations</h5>
+              <p>Live couture showcases and artistic performances</p>
+            </div>
+            <div class="event-highlight">
+              <span class="ic">&#x1F377;</span>
+              <h5>Premium Dining</h5>
+              <p>Signature cocktails and curated dining experiences</p>
+            </div>
+            <div class="event-highlight">
+              <span class="ic">&#x1F4B0;</span>
+              <h5>Charity Auction</h5>
+              <p>Exclusive luxury auction supporting creative talent</p>
+            </div>
+          </div>
+        </div>
+        <div class="event-details-sidebar">
+          <h4>The Peninsula — London's Most Exclusive Event</h4>
+          <span class="price-range">£175 – £350</span>
+          <div class="event-detail-row"><span class="label">Date</span><span class="value">19 Sep 2026</span></div>
+          <div class="event-detail-row"><span class="label">Time</span><span class="value">6:00 PM – Late</span></div>
+          <div class="event-detail-row"><span class="label">Venue</span><span class="value">The Peninsula London</span></div>
+          <div class="event-detail-row"><span class="label">Dress Code</span><span class="value">Black Tie</span></div>
+          <div class="event-ticket-select">
+            <select id="ticketSelect">
+              <option value="175">Standard Ticket — £175</option>
+              <option value="250">VIP Ticket — £250</option>
+              <option value="350">VVIP Ticket — £350</option>
+            </select>
+          </div>
+          <button class="event-book-btn" onclick="addEventToCart()">Secure Your Invitation</button>
+        </div>
       </div>
     </div>
   </section>
@@ -931,26 +1271,175 @@
   <div class="toast" id="toast">Added to cart</div>
 
   <script>
-    let cartCount = 0;
-    function addToCart(name, price) {
-      cartCount++;
-      document.getElementById('cartCount').textContent = cartCount;
+    // === LOCALSTORAGE CART ===
+    let cart = JSON.parse(localStorage.getItem('amoraCart') || '[]');
+
+    function saveCart() {
+      localStorage.setItem('amoraCart', JSON.stringify(cart));
+    }
+
+    function getTotalItems() {
+      return cart.reduce((sum, item) => sum + item.qty, 0);
+    }
+
+    function getTotalPrice() {
+      return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    }
+
+    function addToCart(name, price, size) {
+      const key = name + (size ? ' (' + size + ')' : '');
+      const existing = cart.find(i => i.key === key);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({ key, name, price, size, qty: 1 });
+      }
+      saveCart();
+      updateCartUI();
       const toast = document.getElementById('toast');
-      toast.textContent = name + ' — £' + price.toLocaleString() + ' added to cart';
+      toast.textContent = name + (size ? ' (' + size + ')' : '') + ' — £' + price.toLocaleString() + ' added to cart';
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 2800);
     }
 
+    function removeFromCart(key) {
+      cart = cart.filter(i => i.key !== key);
+      saveCart();
+      updateCartUI();
+    }
+
+    function updateQty(key, delta) {
+      const item = cart.find(i => i.key === key);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(i => i.key !== key);
+      }
+      saveCart();
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const count = getTotalItems();
+      document.getElementById('cartCount').textContent = count;
+
+      const container = document.getElementById('miniCartItems');
+      const totalEl = document.getElementById('miniCartTotal');
+      const totalAmount = document.getElementById('miniCartTotalAmount');
+      const checkoutBtn = document.getElementById('miniCartCheckout');
+
+      if (cart.length === 0) {
+        container.innerHTML = '<div class="mini-cart-empty">Your bag is empty</div>';
+        totalEl.style.display = 'none';
+        checkoutBtn.style.display = 'none';
+        return;
+      }
+
+      let html = '<ul class="mini-cart-items">';
+      cart.forEach(item => {
+        html += `
+          <li class="mini-cart-item">
+            <div style="background:var(--stone);width:50px;height:65px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--taupe);">&#x1F6CD;</div>
+            <div class="mini-cart-item-info">
+              <h5>${item.name}</h5>
+              ${item.size ? '<span class="variant">' + item.size + '</span>' : ''}
+              <div class="mc-price">£${(item.price * item.qty).toLocaleString()}</div>
+              <div class="mini-cart-item-qty">
+                <button onclick="updateQty('${item.key}', -1)">&#x2212;</button>
+                <span>${item.qty}</span>
+                <button onclick="updateQty('${item.key}', 1)">+</button>
+              </div>
+            </div>
+            <button class="mini-cart-item-remove" onclick="removeFromCart('${item.key}')">&times;</button>
+          </li>
+        `;
+      });
+      html += '</ul>';
+      container.innerHTML = html;
+
+      totalEl.style.display = 'flex';
+      totalAmount.textContent = '£' + getTotalPrice().toLocaleString();
+      checkoutBtn.style.display = 'block';
+    }
+
+    // Cart toggle
+    document.getElementById('cartToggle').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('miniCart').classList.toggle('open');
+    });
+    document.getElementById('miniCartClose').addEventListener('click', function() {
+      document.getElementById('miniCart').classList.remove('open');
+    });
+
+    // === EVENT TICKET ADD TO CART ===
+    function addEventToCart() {
+      const select = document.getElementById('ticketSelect');
+      const price = parseInt(select.value);
+      const label = select.options[select.selectedIndex].text;
+      addToCart('The Peninsula Event Ticket', price, label.split(' — ')[0]);
+      document.getElementById('miniCart').classList.add('open');
+    }
+
+    // === HERO SLIDESHOW ===
+    let slideIndex = 0;
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.hero-dots span');
+    let slideInterval;
+
+    function showSlide(index) {
+      slides.forEach((s, i) => {
+        s.classList.toggle('active', i === index);
+      });
+      dots.forEach((d, i) => {
+        d.classList.toggle('active', i === index);
+      });
+    }
+
+    function nextSlide() {
+      slideIndex = (slideIndex + 1) % slides.length;
+      showSlide(slideIndex);
+    }
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        clearInterval(slideInterval);
+        slideIndex = i;
+        showSlide(slideIndex);
+        slideInterval = setInterval(nextSlide, 6000);
+      });
+    });
+
+    slideInterval = setInterval(nextSlide, 6000);
+
+    // === CAROUSEL SCROLL ===
     function scrollCarousel(id, dir) {
       const c = document.getElementById(id);
       c.scrollBy({ left: dir * (c.clientWidth * 0.5), behavior: 'smooth' });
     }
 
+    // === SIZE SELECTORS ===
+    const sizes = ['XS', 'S', 'M', 'L', 'XL'];
+    document.querySelectorAll('.size-select').forEach(container => {
+      const name = container.dataset.name;
+      const price = parseInt(container.dataset.price);
+      sizes.forEach(s => {
+        const btn = document.createElement('button');
+        btn.textContent = s;
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          addToCart(name, price, s);
+        });
+        container.appendChild(btn);
+      });
+    });
+
+    // === INTERSECTION OBSERVER ===
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
+    // === MOBILE TOGGLE ===
     const toggle = document.getElementById('mobileToggle');
     const leftNav = document.querySelector('.nav-left');
     toggle.addEventListener('click', () => {
@@ -966,15 +1455,7 @@
       }
     });
 
-    // Hero dots
-    document.querySelectorAll('.hero-dots span').forEach((dot, i) => {
-      dot.addEventListener('click', () => {
-        document.querySelectorAll('.hero-dots span').forEach(d => d.classList.remove('active'));
-        dot.classList.add('active');
-      });
-    });
-
-    // Video play/pause toggle
+    // === VIDEO PLAY/PAUSE ===
     const v = document.getElementById('brandVideo');
     const playBtn = document.getElementById('playBtn');
     const frame = document.getElementById('videoFrame');
@@ -984,6 +1465,9 @@
     });
     v.addEventListener('play', () => { playBtn.style.display = 'none'; });
     v.addEventListener('pause', () => { playBtn.style.display = 'flex'; });
+
+    // Init cart UI
+    updateCartUI();
   </script>
 
 </body>

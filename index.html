@@ -471,11 +471,15 @@
     }
     .content-banner .ov {
       position: absolute; inset: 0;
-      background: linear-gradient(90deg, rgba(42,37,32,0.85) 0%, rgba(42,37,32,0.3) 55%, transparent);
+      background: linear-gradient(90deg, rgba(42,37,32,0.88) 0%, rgba(42,37,32,0.45) 55%, transparent);
     }
     .content-banner .ov-dark {
-      background: linear-gradient(90deg, rgba(42,37,32,0.88) 0%, rgba(42,37,32,0.55) 60%, transparent);
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(42,37,32,0.92) 0%, rgba(42,37,32,0.6) 60%, transparent);
     }
+    .content-banner .banner-content h2,
+    .content-banner .banner-content p,
+    .content-banner .banner-content .kicker { text-shadow: 0 2px 12px rgba(0,0,0,0.25); }
     .content-banner .banner-content {
       position: relative; z-index: 2;
       max-width: 500px; padding: 0 2rem; color: var(--white);
@@ -513,7 +517,7 @@
     @media (max-width: 768px) {
       .content-banner { min-height: 360px; }
       .content-banner .ov {
-        background: linear-gradient(180deg, rgba(42,37,32,0.3) 0%, rgba(42,37,32,0.85) 100%);
+        background: linear-gradient(180deg, rgba(42,37,32,0.5) 0%, rgba(42,37,32,0.9) 100%);
       }
       .content-banner .banner-content { max-width: 100%; }
     }
@@ -584,7 +588,7 @@
     .tile:hover img { transform: scale(1.05); }
     .tile .ov {
       position: absolute; inset: 0;
-      background: linear-gradient(180deg, transparent 40%, rgba(42,37,32,0.65));
+      background: linear-gradient(180deg, transparent 30%, rgba(42,37,32,0.8));
     }
     .tile .info {
       position: absolute; bottom: 3rem; left: 3rem; right: 3rem;
@@ -1242,7 +1246,7 @@
       .content-banner .banner-content h2 { font-size: 1.4rem; }
       .hero-content h1 { font-size: clamp(2rem, 8vw, 3rem); }
       .hero-content .hero-cta { padding: 0.75rem 1.5rem; font-size: 0.58rem; }
-      .lookbook-item .ov { opacity: 1; background: rgba(42,37,32,0.1); }
+      .lookbook-item .ov { opacity: 1; background: rgba(42,37,32,0.4); }
       .lookbook-item .ov span { font-size: 0.8rem; }
       .news-form { flex-direction: column; }
       .news-form input { border-right: 1px solid rgba(255,255,255,0.2); border-bottom: none; }
@@ -1389,7 +1393,7 @@
       </div>
     </div>
     <div class="bg" style="background-image: url('https://amoraimani.com/wp-content/uploads/2021/10/amoraimani-dresses-1199x800.jpg'); background-position: right center;"></div>
-    <div class="ov" style="background: linear-gradient(270deg, rgba(42,37,32,0.1) 0%, transparent 60%);"></div>
+    <div class="ov" style="background: linear-gradient(270deg, rgba(42,37,32,0.7) 0%, transparent 60%);"></div>
   </section>
 
   <!-- Banner: Sale -->
@@ -1417,7 +1421,7 @@
       </div>
     </div>
     <div class="bg" style="background-image: url('https://amoraimani.com/wp-content/uploads/2020/07/dress043.jpg'); background-position: left center;"></div>
-    <div class="ov" style="background: linear-gradient(270deg, rgba(42,37,32,0.05) 0%, transparent 50%);"></div>
+    <div class="ov" style="background: linear-gradient(270deg, rgba(42,37,32,0.7) 0%, transparent 50%);"></div>
   </section>
 
   <!-- Donate: King's Trust -->

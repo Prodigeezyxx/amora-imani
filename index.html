@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amora Imani — Official Online Boutique</title>
+  <title>Amora Imani — Luxury Fashion Boutique, Knightsbridge London</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -23,6 +23,8 @@
       --line: rgba(42,37,32,0.10);
       --line-lt: rgba(42,37,32,0.06);
       --white: #FFFFFF;
+      --cursor-x: 0px;
+      --cursor-y: 0px;
     }
     html { scroll-behavior: smooth; }
     body {
@@ -34,9 +36,9 @@
       text-rendering: optimizeLegibility;
       overflow-x: hidden;
       font-weight: 300;
-    }
     ::selection { background: var(--cognac); color: var(--white); }
     h1,h2,h3,h4 { font-family: 'Cormorant Garamond', serif; font-weight: 400; }
+
 
     /* === UTILITY BAR === */
     .utility {
@@ -66,7 +68,9 @@
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
       position: sticky; top: 0; z-index: 1000;
+      transition: transform 0.4s ease;
     }
+    .header.hidden { transform: translateY(-100%); }
     .nav-left { display: flex; gap: 2rem; }
     .nav-left a {
       text-decoration: none; color: var(--ink);
@@ -74,8 +78,15 @@
       text-transform: uppercase; font-weight: 400;
       transition: color 0.3s; padding: 0.5rem 0;
       border-bottom: 1px solid transparent;
+      position: relative;
     }
-    .nav-left a:hover { color: var(--cognac); border-bottom-color: var(--cognac); }
+    .nav-left a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 1px; background: var(--cognac);
+      transition: width 0.4s ease;
+    }
+    .nav-left a:hover::after { width: 100%; }
+    .nav-left a:hover { color: var(--cognac); }
     .logo { justify-self: center; text-decoration: none; }
     .logo img { height: 28px; width: auto; display: block; }
     .nav-right { justify-self: end; display: flex; gap: 1.3rem; align-items: center; position: relative; }
@@ -90,23 +101,54 @@
       font-size: 0.5rem; width: 14px; height: 14px; border-radius: 50%;
       display: inline-flex; align-items: center; justify-content: center;
       font-family: 'Inter', sans-serif; font-weight: 500;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
     }
+    .cart-count.bump { transform: scale(1.4); }
     .mobile-toggle { display: none; background: none; border: none; color: var(--ink); font-size: 1.2rem; cursor: pointer; }
+
+    /* === FULL-SCREEN MOBILE NAV === */
+    .nav-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: var(--espresso);
+      display: none; flex-direction: column; justify-content: center; align-items: center;
+      gap: 2rem;
+    }
+    .nav-overlay.open { display: flex; }
+    .nav-overlay a {
+      color: var(--white); text-decoration: none;
+      font-family: 'Cormorant Garamond', serif; font-size: 2rem;
+      letter-spacing: 0.05em; transition: color 0.3s;
+      opacity: 0; transform: translateY(20px);
+    }
+    .nav-overlay.open a { animation: navFadeIn 0.6s ease forwards; }
+    .nav-overlay a:nth-child(1) { animation-delay: 0.1s; }
+    .nav-overlay a:nth-child(2) { animation-delay: 0.2s; }
+    .nav-overlay a:nth-child(3) { animation-delay: 0.3s; }
+    .nav-overlay a:nth-child(4) { animation-delay: 0.4s; }
+    .nav-overlay a:nth-child(5) { animation-delay: 0.5s; }
+    .nav-overlay a:hover { color: var(--cognac); }
+    @keyframes navFadeIn { to { opacity: 1; transform: translateY(0); } }
+    .nav-overlay-close {
+      position: absolute; top: 1.5rem; right: 2rem;
+      background: none; border: none; color: var(--white);
+      font-size: 2rem; cursor: pointer;
+    }
 
     /* === MINI CART === */
     .mini-cart {
-      position: absolute; top: 100%; right: 0; width: 340px;
+      position: absolute; top: 100%; right: 0; width: 360px;
       background: var(--paper); border: 1px solid var(--line);
       border-top: 2px solid var(--cognac);
       box-shadow: 0 20px 60px rgba(0,0,0,0.12);
       display: none; z-index: 1100; max-height: 70vh; overflow-y: auto;
     }
-    .mini-cart.open { display: block; }
+    .mini-cart.open { display: block; animation: cartSlide 0.3s ease; }
+    @keyframes cartSlide { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
     .mini-cart-header {
       padding: 1rem 1.25rem; border-bottom: 1px solid var(--line-lt);
       display: flex; justify-content: space-between; align-items: center;
     }
-    .mini-cart-header h4 { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--espresso); }
+    .mini-cart-header h4 { font-family: 'Inter', sans-serif; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--espresso); font-weight: 500; }
     .mini-cart-close { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--taupe); }
     .mini-cart-close:hover { color: var(--espresso); }
     .mini-cart-items { padding: 0; list-style: none; }
@@ -115,26 +157,27 @@
       gap: 0.85rem; padding: 1rem 1.25rem; align-items: center;
       border-bottom: 1px solid var(--line-lt);
     }
-    .mini-cart-item img { width: 50px; height: 65px; object-fit: cover; }
+    .mini-cart-item-img { width: 50px; height: 65px; object-fit: cover; background: var(--stone); }
     .mini-cart-item-info h5 { font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; font-weight: 500; color: var(--espresso); }
     .mini-cart-item-info .variant { font-size: 0.65rem; color: var(--taupe); letter-spacing: 0.05em; }
     .mini-cart-item-info .mc-price { font-size: 0.78rem; color: var(--cognac); font-weight: 500; margin-top: 0.15rem; }
-    .mini-cart-item-qty { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.3rem; }
-    .mini-cart-item-qty button {
+    .mc-qty { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.3rem; }
+    .mc-qty button {
       width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--line);
-      background: var(--white); cursor: pointer; font-size: 0.6rem; display: flex;
+      background: var(--white); font-size: 0.6rem; display: flex;
       align-items: center; justify-content: center; color: var(--ink);
+      transition: border-color 0.2s;
     }
-    .mini-cart-item-qty button:hover { border-color: var(--cognac); color: var(--cognac); }
-    .mini-cart-item-qty span { font-size: 0.72rem; min-width: 14px; text-align: center; }
-    .mini-cart-item-remove { background: none; border: none; color: var(--taupe); cursor: pointer; font-size: 0.8rem; align-self: flex-start; }
+    .mc-qty button:hover { border-color: var(--cognac); color: var(--cognac); }
+    .mc-qty span { font-size: 0.72rem; min-width: 14px; text-align: center; }
+    .mini-cart-item-remove { background: none; border: none; color: var(--taupe); font-size: 0.8rem; align-self: flex-start; transition: color 0.2s; }
     .mini-cart-item-remove:hover { color: #c0392b; }
     .mini-cart-total {
       padding: 1rem 1.25rem; display: flex; justify-content: space-between;
       font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--espresso); font-weight: 500;
     }
     .mini-cart-checkout {
-      display: block; margin: 0 1.25rem 1.25rem; padding: 0.75rem; text-align: center;
+      display: block; margin: 0 1.25rem 1.25rem; padding: 0.8rem; text-align: center;
       background: var(--espresso); color: var(--white); text-decoration: none;
       font-size: 0.64rem; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 500;
       transition: background 0.3s;
@@ -142,93 +185,111 @@
     .mini-cart-checkout:hover { background: var(--cognac); }
     .mini-cart-empty { padding: 2rem 1.25rem; text-align: center; color: var(--taupe); font-size: 0.82rem; }
 
-    /* === HERO CAMPAIGN === */
+    /* === HERO === */
     .hero {
-      position: relative;
-      height: 90vh; min-height: 620px;
-      overflow: hidden;
-      background: var(--espresso);
+      position: relative; height: 100vh; min-height: 620px;
+      overflow: hidden; background: var(--espresso);
     }
     .hero-video {
       position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(42,37,32,0.1) 0%, transparent 30%, rgba(42,37,32,0.6) 100%);
     }
     .hero-slide {
       position: absolute; inset: 0;
-      opacity: 0; transition: opacity 1.2s ease;
+      opacity: 0; transition: opacity 1.4s ease;
+      display: flex; align-items: flex-end;
     }
     .hero-slide.active { opacity: 1; }
-    .hero-ov {
-      position: absolute; inset: 0;
-      background: linear-gradient(180deg, rgba(42,37,32,0.15) 0%, transparent 35%, rgba(42,37,32,0.55) 100%);
-    }
     .hero-content {
       position: relative; z-index: 2;
-      height: 100%; display: flex; flex-direction: column;
-      justify-content: flex-end; align-items: center;
-      text-align: center; padding: 0 2rem 4rem;
+      width: 100%; text-align: center;
+      padding: 0 2rem 5rem;
     }
     .hero-content .kicker {
-      color: var(--paper);
+      color: var(--sand);
       font-family: 'Cormorant Garamond', serif; font-style: italic;
-      font-size: 1.05rem; margin-bottom: 0.75rem;
+      font-size: 1.05rem; margin-bottom: 0.75rem; display: block;
+      opacity: 0; transform: translateY(15px);
+      transition: all 0.8s ease 0.2s;
     }
+    .hero-slide.active .hero-content .kicker { opacity: 1; transform: translateY(0); }
     .hero-content h1 {
-      font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+      font-size: clamp(2.8rem, 6vw, 5rem);
       color: var(--white); font-weight: 400;
-      line-height: 1.05; margin-bottom: 1.5rem;
-      letter-spacing: -0.01em;
+      line-height: 1.02; margin-bottom: 1.5rem;
+      letter-spacing: -0.015em;
+      opacity: 0; transform: translateY(20px);
+      transition: all 0.8s ease 0.35s;
     }
+    .hero-slide.active .hero-content h1 { opacity: 1; transform: translateY(0); }
     .hero-content h1 em { font-style: italic; }
     .hero-content .hero-cta {
       display: inline-block; padding: 0.9rem 2.3rem;
       background: var(--white); color: var(--espresso);
-      text-decoration: none; font-size: 0.66rem;
+      text-decoration: none; font-size: 0.65rem;
       letter-spacing: 0.22em; text-transform: uppercase;
-      font-weight: 500; transition: all 0.3s;
+      font-weight: 500; transition: all 0.4s;
       border: 1px solid var(--white);
+      opacity: 0; transform: translateY(20px);
+      transition: all 0.4s ease, opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s;
     }
+    .hero-slide.active .hero-content .hero-cta { opacity: 1; transform: translateY(0); }
     .hero-content .hero-cta:hover { background: transparent; color: var(--white); }
+    .hero-scroll {
+      position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      z-index: 3; color: rgba(255,255,255,0.4);
+      font-size: 0.52rem; letter-spacing: 0.25em; text-transform: uppercase;
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    }
+    .hero-scroll .line {
+      width: 1px; height: 30px; background: rgba(255,255,255,0.2);
+      position: relative; overflow: hidden;
+    }
+    .hero-scroll .line::after {
+      content: ''; position: absolute; top: -100%; left: 0;
+      width: 100%; height: 100%; background: var(--cognac);
+      animation: scrollLine 2s ease infinite;
+    }
+    @keyframes scrollLine { 0% { top: -100%; } 100% { top: 100%; } }
     .hero-dots {
-      position: absolute; bottom: 1.5rem; left: 50%;
-      transform: translateX(-50%);
-      display: flex; gap: 0.5rem; z-index: 3;
+      position: absolute; bottom: 5rem; left: 50%;
+      transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 3;
     }
     .hero-dots span {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: rgba(255,255,255,0.4); cursor: pointer;
-      transition: background 0.3s;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,0.35); cursor: pointer;
+      transition: all 0.4s;
     }
-    .hero-dots span.active { background: var(--white); }
+    .hero-dots span.active { background: var(--white); width: 20px; border-radius: 3px; }
 
     /* === SECTION HEAD === */
-    .section { padding: 5rem 0; }
-    .sec-head {
-      text-align: center; margin-bottom: 2.5rem;
-      padding: 0 2rem;
-    }
+    .section { padding: 6rem 0; }
+    .sec-head { text-align: center; margin-bottom: 3rem; padding: 0 2rem; }
     .sec-head .kicker {
-      font-size: 0.66rem; letter-spacing: 0.28em;
+      font-size: 0.6rem; letter-spacing: 0.3em;
       text-transform: uppercase; color: var(--cognac);
-      display: block; margin-bottom: 0.65rem;
+      display: block; margin-bottom: 0.65rem; font-weight: 400;
     }
     .sec-head h2 {
-      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
       color: var(--espresso); font-weight: 400;
-      letter-spacing: -0.01em;
+      letter-spacing: -0.01em; line-height: 1.1;
     }
     .sec-head h2 em { font-style: italic; color: var(--cognac); }
     .sec-head .sub {
       color: var(--taupe); font-size: 0.88rem;
-      margin-top: 0.5rem; font-weight: 300;
+      margin-top: 0.6rem; font-weight: 300;
     }
     .sec-head .view-all {
       display: inline-block; margin-top: 1.25rem;
-      font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase;
+      font-size: 0.64rem; letter-spacing: 0.25em; text-transform: uppercase;
       color: var(--ink); text-decoration: none;
       border-bottom: 1px solid var(--ink); padding-bottom: 2px;
-      transition: all 0.3s;
+      transition: all 0.3s; font-weight: 400;
     }
     .sec-head .view-all:hover { color: var(--cognac); border-color: var(--cognac); }
 
@@ -245,7 +306,7 @@
       width: 44px; height: 44px; border-radius: 50%;
       background: var(--white); border: 1px solid var(--line);
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 5; transition: all 0.3s;
+      z-index: 5; transition: all 0.3s;
       font-size: 1rem; color: var(--ink);
     }
     .carousel-arrow:hover { background: var(--espresso); color: var(--white); border-color: var(--espresso); }
@@ -255,6 +316,7 @@
     .product {
       flex: 0 0 calc(25% - 0.94rem);
       min-width: 240px; cursor: pointer;
+      transition: opacity 0.4s;
     }
     .product-img {
       position: relative; aspect-ratio: 3/4; overflow: hidden;
@@ -262,13 +324,13 @@
     }
     .product-img img {
       width: 100%; height: 100%; object-fit: cover;
-      transition: transform 0.9s cubic-bezier(0.22,1,0.36,1);
+      transition: transform 1s cubic-bezier(0.22,1,0.36,1);
     }
-    .product:hover .product-img img { transform: scale(1.03); }
+    .product:hover .product-img img { transform: scale(1.04); }
     .product-img .add-layer {
       position: absolute; left: 0; right: 0; bottom: 0;
       transform: translateY(100%);
-      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+      transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
     }
     .product:hover .product-img .add-layer { transform: translateY(0); }
     .product-img .add-layer .size-select {
@@ -276,8 +338,8 @@
     }
     .product-img .add-layer .size-select button {
       width: 32px; height: 28px; font-size: 0.55rem; font-weight: 500;
-      border: 1px solid rgba(255,255,255,0.2); background: transparent; color: var(--white);
-      cursor: pointer; font-family: 'Inter', sans-serif; letter-spacing: 0.05em;
+      border: 1px solid rgba(255,255,255,0.15); background: transparent; color: var(--white);
+      font-family: 'Inter', sans-serif; letter-spacing: 0.05em;
       transition: all 0.2s;
     }
     .product-img .add-layer .size-select button:hover { background: var(--cognac); border-color: var(--cognac); }
@@ -285,14 +347,15 @@
       background: var(--espresso); color: var(--white);
       padding: 0.8rem; text-align: center;
       font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
-      border: none; cursor: pointer; width: 100%;
+      border: none; width: 100%;
       font-family: 'Inter', sans-serif; font-weight: 500;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.3s;
     }
     .product-img .add-layer .add:hover { background: var(--cognac); }
     .badge {
       position: absolute; top: 0.85rem; left: 0.85rem;
-      font-size: 0.54rem; letter-spacing: 0.2em; text-transform: uppercase;
+      font-size: 0.52rem; letter-spacing: 0.2em; text-transform: uppercase;
       color: var(--white); background: var(--cognac);
       padding: 0.28rem 0.6rem; font-family: 'Inter', sans-serif;
     }
@@ -302,15 +365,15 @@
       width: 32px; height: 32px; border-radius: 50%;
       background: rgba(255,255,255,0.85);
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; border: none; font-size: 0.85rem;
+      border: none; font-size: 0.85rem;
       opacity: 0; transition: opacity 0.3s;
     }
     .product:hover .wishlist-btn { opacity: 1; }
     .wishlist-btn:hover { background: var(--white); }
     .product-cat {
-      font-size: 0.58rem; letter-spacing: 0.22em;
+      font-size: 0.56rem; letter-spacing: 0.24em;
       text-transform: uppercase; color: var(--taupe);
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.25rem; font-weight: 400;
     }
     .product h4 {
       font-family: 'Cormorant Garamond', serif; font-weight: 500;
@@ -326,26 +389,205 @@
     }
     .product .price .sale { color: var(--cognac); }
 
-    /* === DISCOVERY TILES (large) === */
+    /* === QUICK VIEW MODAL === */
+    .qv-overlay {
+      position: fixed; inset: 0; z-index: 3000;
+      background: rgba(42,37,32,0.6);
+      backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      padding: 2rem;
+    }
+    .qv-overlay.open { display: flex; }
+    .qv-modal {
+      background: var(--paper); max-width: 880px; width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr;
+      max-height: 80vh; overflow-y: auto;
+      animation: qvIn 0.4s ease;
+    }
+    @keyframes qvIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+    .qv-image { height: 100%; min-height: 500px; background: var(--stone); }
+    .qv-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .qv-details { padding: 2.5rem; display: flex; flex-direction: column; justify-content: center; }
+    .qv-details .qv-cat { font-size: 0.56rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--taupe); margin-bottom: 0.5rem; }
+    .qv-details h3 { font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--espresso); }
+    .qv-details .qv-price { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--cognac); margin-bottom: 1.25rem; }
+    .qv-details .qv-price .old { text-decoration: line-through; color: var(--taupe); margin-right: 0.75rem; font-size: 1.1rem; }
+    .qv-details p { font-size: 0.82rem; color: var(--ink); line-height: 1.8; margin-bottom: 1.5rem; font-weight: 300; }
+    .qv-details .qv-sizes { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .qv-details .qv-sizes button {
+      width: 40px; height: 34px; border: 1px solid var(--line); background: var(--white);
+      font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 500;
+      color: var(--ink); transition: all 0.2s;
+    }
+    .qv-details .qv-sizes button:hover { border-color: var(--cognac); color: var(--cognac); }
+    .qv-details .qv-sizes button.selected { border-color: var(--espresso); background: var(--espresso); color: var(--white); }
+    .qv-details .qv-add {
+      width: 100%; padding: 0.9rem; text-align: center;
+      background: var(--espresso); color: var(--white); border: none;
+      font-size: 0.64rem; letter-spacing: 0.22em; text-transform: uppercase;
+      font-weight: 500; font-family: 'Inter', sans-serif;
+      transition: background 0.3s;
+    }
+    .qv-details .qv-add:hover { background: var(--cognac); }
+    .qv-close {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--white); border: none; font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ink); z-index: 5;
+    }
+
+    /* === SIZE GUIDE MODAL === */
+    .sg-overlay {
+      position: fixed; inset: 0; z-index: 3000;
+      background: rgba(42,37,32,0.6);
+      backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      padding: 2rem;
+    }
+    .sg-overlay.open { display: flex; }
+    .sg-modal {
+      background: var(--paper); max-width: 640px; width: 100%;
+      padding: 2.5rem; animation: qvIn 0.4s ease;
+      max-height: 80vh; overflow-y: auto;
+    }
+    .sg-modal h3 { font-size: 1.3rem; margin-bottom: 0.3rem; color: var(--espresso); }
+    .sg-modal .sg-sub { font-size: 0.78rem; color: var(--taupe); margin-bottom: 1.5rem; }
+    .sg-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+    .sg-table th { text-align: left; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--line); color: var(--taupe); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.62rem; }
+    .sg-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--line-lt); color: var(--ink); }
+    .sg-close {
+      float: right; background: none; border: none; font-size: 1.2rem; color: var(--taupe);
+    }
+
+    /* === CONTENT BANNERS === */
+    .content-banner {
+      position: relative; min-height: 480px;
+      display: flex; align-items: center; overflow: hidden;
+    }
+    .content-banner .bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+    }
+    .content-banner .ov {
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(42,37,32,0.85) 0%, rgba(42,37,32,0.3) 55%, transparent);
+    }
+    .content-banner .ov-dark {
+      background: linear-gradient(90deg, rgba(42,37,32,0.88) 0%, rgba(42,37,32,0.55) 60%, transparent);
+    }
+    .content-banner .banner-content {
+      position: relative; z-index: 2;
+      max-width: 500px; padding: 0 2rem; color: var(--white);
+    }
+    .content-banner .banner-content .kicker {
+      font-size: 0.6rem; letter-spacing: 0.28em;
+      text-transform: uppercase; color: var(--sand);
+      display: block; margin-bottom: 0.75rem;
+    }
+    .content-banner .banner-content h2 {
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      margin-bottom: 0.75rem; line-height: 1.12;
+    }
+    .content-banner .banner-content p {
+      color: rgba(255,255,255,0.7); font-size: 0.92rem;
+      font-weight: 300; line-height: 1.8; margin-bottom: 1.5rem;
+    }
+    .content-banner .banner-content .banner-cta {
+      display: inline-block; padding: 0.85rem 2rem;
+      border: 1px solid rgba(255,255,255,0.5); color: var(--white);
+      text-decoration: none; font-size: 0.62rem;
+      letter-spacing: 0.24em; text-transform: uppercase;
+      font-weight: 500; transition: all 0.3s;
+    }
+    .content-banner .banner-content .banner-cta:hover {
+      background: var(--white); color: var(--espresso);
+    }
+    .content-banner .banner-content .banner-cta-primary {
+      background: var(--cognac); border-color: var(--cognac);
+    }
+    .content-banner .banner-content .banner-cta-primary:hover {
+      background: var(--white); color: var(--cognac); border-color: var(--white);
+    }
+    .content-banner-right .banner-content { margin-left: auto; }
+    @media (max-width: 768px) {
+      .content-banner { min-height: 360px; }
+      .content-banner .ov {
+        background: linear-gradient(180deg, rgba(42,37,32,0.3) 0%, rgba(42,37,32,0.85) 100%);
+      }
+      .content-banner .banner-content { max-width: 100%; }
+    }
+
+    /* === DONATE SECTION === */
+    .donate-section {
+      background: var(--espresso); padding: 3rem 0; text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .donate-section h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; color: var(--white); font-weight: 400;
+      margin-bottom: 1rem;
+    }
+    .donate-section .donate-btn {
+      display: inline-block; padding: 0.8rem 2.5rem;
+      background: var(--cognac); color: var(--white);
+      text-decoration: none; font-size: 0.64rem;
+      letter-spacing: 0.24em; text-transform: uppercase;
+      font-weight: 500; transition: background 0.3s;
+      font-family: 'Inter', sans-serif;
+    }
+    .donate-section .donate-btn:hover { background: var(--cognac-dk); }
+
+    /* === BLOG === */
+    .blog-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 0 2rem;
+    }
+    .blog-card { background: var(--paper); border: 1px solid var(--line); transition: border-color 0.3s; }
+    .blog-card:hover { border-color: var(--cognac); }
+    .blog-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+    .blog-card-body { padding: 1.25rem; }
+    .blog-card-body .blog-date {
+      font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--taupe); display: block; margin-bottom: 0.5rem;
+    }
+    .blog-card-body h4 {
+      font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+      color: var(--espresso); margin-bottom: 0.5rem; font-weight: 500;
+    }
+    .blog-card-body p {
+      font-size: 0.78rem; color: var(--taupe); font-weight: 300;
+      line-height: 1.7; margin-bottom: 0.75rem;
+    }
+    .blog-card-body a {
+      font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--cognac); text-decoration: none; font-weight: 500;
+    }
+    .blog-card-body a:hover { color: var(--espresso); }
+    @media (max-width: 768px) {
+      .blog-grid { grid-template-columns: 1fr; max-width: 400px; }
+    }
+
+    /* === DISCOVERY TILES === */
     .discovery {
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 0;
     }
     .tile {
-      position: relative; height: 580px;
+      position: relative; height: 600px;
       overflow: hidden; cursor: pointer;
     }
     .tile img {
       width: 100%; height: 100%; object-fit: cover;
-      transition: transform 1.2s cubic-bezier(0.22,1,0.36,1);
+      transition: transform 1.4s cubic-bezier(0.22,1,0.36,1);
     }
-    .tile:hover img { transform: scale(1.04); }
+    .tile:hover img { transform: scale(1.05); }
     .tile .ov {
       position: absolute; inset: 0;
-      background: linear-gradient(180deg, transparent 50%, rgba(42,37,32,0.6));
+      background: linear-gradient(180deg, transparent 40%, rgba(42,37,32,0.65));
     }
     .tile .info {
-      position: absolute; bottom: 2.5rem; left: 2.5rem; right: 2.5rem;
+      position: absolute; bottom: 3rem; left: 3rem; right: 3rem;
       color: var(--white); z-index: 2;
     }
     .tile .info .kicker {
@@ -354,20 +596,41 @@
       margin-bottom: 0.5rem; display: block;
     }
     .tile .info h3 {
-      font-size: 2rem; margin-bottom: 0.4rem; font-weight: 400;
+      font-size: 2.2rem; margin-bottom: 0.4rem; font-weight: 400;
     }
     .tile .info .desc {
-      font-size: 0.82rem; color: rgba(255,255,255,0.75);
-      font-weight: 300; margin-bottom: 1rem;
+      font-size: 0.82rem; color: rgba(255,255,255,0.7);
+      font-weight: 300; margin-bottom: 1.25rem; max-width: 360px;
     }
     .tile .info .discover {
       display: inline-block; padding: 0.7rem 1.8rem;
-      border: 1px solid rgba(255,255,255,0.6); color: var(--white);
-      text-decoration: none; font-size: 0.62rem;
-      letter-spacing: 0.22em; text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.5); color: var(--white);
+      text-decoration: none; font-size: 0.6rem;
+      letter-spacing: 0.24em; text-transform: uppercase;
       transition: all 0.3s; font-family: 'Inter', sans-serif; font-weight: 500;
     }
     .tile .info .discover:hover { background: var(--white); color: var(--espresso); }
+
+    /* === LOOKBOOK === */
+    .lookbook {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr;
+      grid-template-rows: 300px 300px; gap: 0;
+    }
+    .lookbook-item { position: relative; overflow: hidden; cursor: pointer; }
+    .lookbook-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(0.22,1,0.36,1); }
+    .lookbook-item:hover img { transform: scale(1.05); }
+    .lookbook-item:first-child { grid-row: span 2; }
+    .lookbook-item .ov {
+      position: absolute; inset: 0; background: rgba(42,37,32,0.2);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .lookbook-item:hover .ov { opacity: 1; }
+    .lookbook-item .ov span {
+      color: var(--white); font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; font-style: italic; letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--white); padding-bottom: 3px;
+    }
 
     /* === EVENTS SECTION === */
     .event-hero {
@@ -381,7 +644,7 @@
     }
     .event-hero-ov {
       position: absolute; inset: 0;
-      background: linear-gradient(90deg, rgba(42,37,32,0.88) 0%, rgba(42,37,32,0.4) 60%, transparent);
+      background: linear-gradient(90deg, rgba(42,37,32,0.88) 0%, rgba(42,37,32,0.35) 60%, transparent);
     }
     .event-hero-content {
       position: relative; z-index: 2;
@@ -394,7 +657,7 @@
     }
     .event-hero-content .date-badge {
       display: inline-block; background: var(--cognac); color: var(--white);
-      font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase;
+      font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase;
       padding: 0.3rem 0.7rem; margin-bottom: 1rem; font-weight: 500;
     }
     .event-hero-content h2 {
@@ -410,20 +673,21 @@
       display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.75rem;
     }
     .event-hero-content .event-meta span {
-      font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
-      color: rgba(255,255,255,0.5); font-weight: 400;
+      font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.45); font-weight: 400;
     }
     .event-hero-content .event-meta strong {
       display: block; color: var(--white); font-weight: 500;
       font-family: 'Cormorant Garamond', serif; font-size: 1rem;
       letter-spacing: 0;
     }
+    .event-cta-group { display: flex; gap: 0.75rem; flex-wrap: wrap; }
     .event-hero-content .cta {
       display: inline-block; padding: 0.9rem 2.2rem;
       border: 1px solid rgba(255,255,255,0.5); color: var(--white);
-      text-decoration: none; font-size: 0.66rem;
+      text-decoration: none; font-size: 0.64rem;
       letter-spacing: 0.22em; text-transform: uppercase;
-      font-weight: 500; transition: all 0.3s; margin-right: 0.75rem; margin-bottom: 0.5rem;
+      font-weight: 500; transition: all 0.3s;
     }
     .event-hero-content .cta:hover { background: var(--white); color: var(--espresso); }
     .event-hero-content .cta-primary {
@@ -431,15 +695,13 @@
     }
     .event-hero-content .cta-primary:hover { background: var(--white); color: var(--cognac); border-color: var(--white); }
 
-    .event-details {
-      background: var(--paper); padding: 5rem 0;
-    }
+    .event-details { background: var(--paper); padding: 6rem 0; }
     .event-details-grid {
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 4rem; max-width: 1200px; margin: 0 auto; padding: 0 2rem;
     }
     .event-details-content .kicker {
-      font-size: 0.66rem; letter-spacing: 0.28em; text-transform: uppercase;
+      font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase;
       color: var(--cognac); display: block; margin-bottom: 0.65rem;
     }
     .event-details-content h3 {
@@ -449,25 +711,26 @@
     .event-details-content h3 em { font-style: italic; color: var(--cognac); }
     .event-details-content p {
       color: var(--ink); font-weight: 300; font-size: 0.92rem;
-      line-height: 1.9; margin-bottom: 1rem;
+      line-height: 1.9; margin-bottom: 1.5rem;
     }
     .event-highlights {
       display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
     }
     .event-highlight {
-      padding: 1.25rem; border: 1px solid var(--line);
-      text-align: center;
+      padding: 1.5rem; border: 1px solid var(--line); text-align: center;
+      transition: border-color 0.3s;
     }
+    .event-highlight:hover { border-color: var(--cognac); }
     .event-highlight .ic { font-size: 1.3rem; margin-bottom: 0.4rem; display: block; }
     .event-highlight h5 {
-      font-family: 'Inter', sans-serif; font-size: 0.62rem;
+      font-family: 'Inter', sans-serif; font-size: 0.6rem;
       letter-spacing: 0.15em; text-transform: uppercase;
       color: var(--espresso); font-weight: 500; margin-bottom: 0.15rem;
     }
     .event-highlight p { font-size: 0.68rem; color: var(--taupe); margin: 0; line-height: 1.5; }
     .event-details-sidebar {
       border: 1px solid var(--line); padding: 2rem;
-      background: var(--bg); align-self: start; position: sticky; top: 90px;
+      background: var(--bg); align-self: start; position: sticky; top: 100px;
     }
     .event-details-sidebar h4 {
       font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--espresso);
@@ -486,21 +749,48 @@
     .event-ticket-select select {
       width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--line);
       background: var(--white); font-family: 'Inter', sans-serif; font-size: 0.78rem;
-      color: var(--espresso); outline: none; cursor: pointer;
+      color: var(--espresso); outline: none;
     }
     .event-ticket-select select:focus { border-color: var(--cognac); }
     .event-book-btn {
       width: 100%; padding: 0.85rem; text-align: center;
       background: var(--cognac); color: var(--white); border: none;
       font-size: 0.64rem; letter-spacing: 0.22em; text-transform: uppercase;
-      font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif;
+      font-weight: 500; font-family: 'Inter', sans-serif;
       transition: background 0.3s;
     }
     .event-book-btn:hover { background: var(--cognac-dk); }
 
+    /* === COMPLETE THE LOOK === */
+    .ctl { padding: 4rem 0; background: var(--bg); }
+    .ctl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .ctl-item { text-align: center; }
+    .ctl-item img { width: 100%; aspect-ratio: 1/1.3; object-fit: cover; margin-bottom: 0.75rem; transition: transform 0.6s; }
+    .ctl-item:hover img { transform: scale(1.02); }
+    .ctl-item h5 { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 500; color: var(--espresso); }
+    .ctl-item .ctl-price { font-family: 'Cormorant Garamond', serif; color: var(--cognac); font-size: 1rem; }
+
+    /* === TESTIMONIALS === */
+    .testimonials { padding: 5rem 0; background: var(--paper); border-top: 1px solid var(--line-lt); border-bottom: 1px solid var(--line-lt); }
+    .testimonial-carousel { max-width: 700px; margin: 0 auto; padding: 0 2rem; text-align: center; }
+    .testimonial-track { position: relative; min-height: 200px; }
+    .testimonial { position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s ease; display: flex; flex-direction: column; justify-content: center; }
+    .testimonial.active { opacity: 1; position: relative; }
+    .testimonial .stars { color: var(--cognac); font-size: 0.75rem; letter-spacing: 0.3em; margin-bottom: 1rem; }
+    .testimonial blockquote {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-style: italic;
+      color: var(--espresso); line-height: 1.6; margin-bottom: 1rem;
+    }
+    .testimonial .author { font-size: 0.7rem; color: var(--taupe); letter-spacing: 0.12em; font-weight: 400; }
+    .testimonial-dots { display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem; }
+    .testimonial-dots span {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--muted); cursor: pointer; transition: all 0.3s;
+    }
+    .testimonial-dots span.active { background: var(--cognac); width: 20px; border-radius: 3px; }
+
     /* === EDITORIAL CAMPAIGN === */
     .campaign {
-      position: relative; min-height: 600px;
+      position: relative; min-height: 560px;
       display: flex; align-items: center; overflow: hidden;
     }
     .campaign-bg {
@@ -509,14 +799,14 @@
     }
     .campaign-ov {
       position: absolute; inset: 0;
-      background: linear-gradient(90deg, rgba(42,37,32,0.85) 0%, rgba(42,37,32,0.35) 55%, transparent);
+      background: linear-gradient(90deg, rgba(42,37,32,0.85) 0%, rgba(42,37,32,0.3) 55%, transparent);
     }
     .campaign-content {
       position: relative; z-index: 2;
       max-width: 500px; padding: 0 2rem; color: var(--white);
     }
     .campaign-content .kicker {
-      font-size: 0.66rem; letter-spacing: 0.28em;
+      font-size: 0.6rem; letter-spacing: 0.28em;
       text-transform: uppercase; color: var(--sand);
       display: block; margin-bottom: 1rem;
     }
@@ -526,19 +816,17 @@
     }
     .campaign-content h2 em { font-style: italic; }
     .campaign-content p {
-      color: rgba(255,255,255,0.75); font-size: 0.95rem;
+      color: rgba(255,255,255,0.7); font-size: 0.95rem;
       font-weight: 300; line-height: 1.8; margin-bottom: 1.75rem;
     }
     .campaign-content .cta {
       display: inline-block; padding: 0.9rem 2.2rem;
       border: 1px solid rgba(255,255,255,0.5); color: var(--white);
-      text-decoration: none; font-size: 0.66rem;
+      text-decoration: none; font-size: 0.64rem;
       letter-spacing: 0.22em; text-transform: uppercase;
       font-weight: 500; transition: all 0.3s;
     }
     .campaign-content .cta:hover { background: var(--white); color: var(--espresso); }
-
-
 
     /* === SERVICES STRIP === */
     .services {
@@ -550,22 +838,22 @@
     .srv { display: flex; flex-direction: column; gap: 0.25rem; }
     .srv .ic { font-size: 1.05rem; }
     .srv h4 {
-      font-family: 'Inter', sans-serif; font-size: 0.7rem;
+      font-family: 'Inter', sans-serif; font-size: 0.68rem;
       letter-spacing: 0.15em; text-transform: uppercase;
       color: var(--espresso); font-weight: 500;
     }
-    .srv p { font-size: 0.7rem; color: var(--taupe); }
+    .srv p { font-size: 0.68rem; color: var(--taupe); }
 
     /* === ABOUT === */
-    .about { padding: 5rem 0; background: var(--paper); }
+    .about { padding: 6rem 0; background: var(--paper); }
     .about-grid {
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 4rem; align-items: center; max-width: 1200px;
+      gap: 5rem; align-items: center; max-width: 1200px;
       margin: 0 auto; padding: 0 2rem;
     }
-    .about-img { width: 100%; height: 520px; object-fit: cover; }
+    .about-img { width: 100%; height: 560px; object-fit: cover; }
     .about-content .kicker {
-      font-size: 0.66rem; letter-spacing: 0.28em; text-transform: uppercase;
+      font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase;
       color: var(--cognac); display: block; margin-bottom: 1rem;
     }
     .about-content h2 {
@@ -574,22 +862,22 @@
     }
     .about-content h2 em { font-style: italic; color: var(--cognac); }
     .about-content p {
-      color: var(--ink); font-weight: 300; font-size: 0.93rem;
+      color: var(--ink); font-weight: 300; font-size: 0.92rem;
       line-height: 1.85; margin-bottom: 1rem;
     }
     .about-content .cta {
       display: inline-block; margin-top: 1.25rem;
       padding: 0.9rem 2.2rem; border: 1px solid var(--espresso);
       color: var(--espresso); text-decoration: none;
-      font-size: 0.66rem; letter-spacing: 0.22em;
+      font-size: 0.64rem; letter-spacing: 0.22em;
       text-transform: uppercase; font-weight: 500; transition: all 0.3s;
     }
     .about-content .cta:hover { background: var(--espresso); color: var(--white); }
 
     /* === INSTAGRAM === */
-    .insta { padding: 5rem 0 0; text-align: center; }
+    .insta { padding: 6rem 0 0; text-align: center; }
     .insta .kicker {
-      font-size: 0.66rem; letter-spacing: 0.28em; text-transform: uppercase;
+      font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase;
       color: var(--cognac); display: block; margin-bottom: 0.65rem;
     }
     .insta h2 {
@@ -599,7 +887,7 @@
     .insta h2 em { font-style: italic; color: var(--cognac); }
     .insta-grid {
       display: grid; grid-template-columns: repeat(4, 1fr);
-      margin-top: 2.5rem;
+      margin-top: 3rem;
     }
     .insta-item {
       aspect-ratio: 1; overflow: hidden; position: relative; cursor: pointer;
@@ -618,72 +906,257 @@
     .insta-item:hover .ov { opacity: 1; }
 
     /* === NEWSLETTER === */
-    .newsletter { background: var(--espresso); padding: 3.5rem 0; text-align: center; }
+    .newsletter { background: var(--espresso); padding: 4rem 0; text-align: center; }
     .newsletter h3 {
-      font-size: 1.7rem; color: var(--white); margin-bottom: 0.4rem;
+      font-size: 1.8rem; color: var(--white); margin-bottom: 0.4rem; font-weight: 400;
     }
     .newsletter h3 em { font-style: italic; }
     .newsletter p {
-      color: rgba(255,255,255,0.6); font-size: 0.88rem;
+      color: rgba(255,255,255,0.5); font-size: 0.88rem;
       margin-bottom: 1.5rem; font-weight: 300;
     }
     .news-form {
-      display: flex; max-width: 460px; margin: 0 auto;
+      display: flex; max-width: 440px; margin: 0 auto;
     }
     .news-form input {
       flex: 1; background: transparent;
-      border: 1px solid rgba(255,255,255,0.25); border-right: none;
+      border: 1px solid rgba(255,255,255,0.2); border-right: none;
       color: var(--white); padding: 0.85rem 1.25rem; font-size: 0.8rem;
       font-family: 'Inter', sans-serif; outline: none;
     }
     .news-form input:focus { border-color: var(--cognac); }
-    .news-form input::placeholder { color: rgba(255,255,255,0.4); }
+    .news-form input::placeholder { color: rgba(255,255,255,0.35); }
     .news-form button {
       background: var(--cognac); color: var(--white);
-      border: 1px solid var(--cognac); padding: 0 1.5rem;
-      font-size: 0.64rem; letter-spacing: 0.22em; text-transform: uppercase;
-      cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 500;
+      border: 1px solid var(--cognac); padding: 0 1.75rem;
+      font-size: 0.62rem; letter-spacing: 0.24em; text-transform: uppercase;
+      font-family: 'Inter', sans-serif; font-weight: 500;
       transition: all 0.3s;
     }
     .news-form button:hover { background: transparent; color: var(--cognac); }
 
     /* === FOOTER === */
     .footer {
-      background: var(--espresso); color: rgba(255,255,255,0.6);
-      padding: 4rem 0 1.5rem;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      background: var(--espresso); color: rgba(255,255,255,0.5);
+      padding: 5rem 0 2rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
     }
     .footer-grid {
       display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
-      gap: 2.5rem; margin-bottom: 3rem;
-      max-width: 1400px; margin: 0 auto 3rem;
+      gap: 2.5rem; max-width: 1400px; margin: 0 auto 4rem;
       padding: 0 2rem;
     }
     .footer-brand img { height: 26px; width: auto; filter: brightness(0) invert(1); margin-bottom: 1rem; display: block; }
-    .footer-brand p { font-size: 0.82rem; line-height: 1.85; font-weight: 300; }
+    .footer-brand p { font-size: 0.8rem; line-height: 1.85; font-weight: 300; color: rgba(255,255,255,0.4); }
     .footer h4 {
-      font-family: 'Inter', sans-serif; font-size: 0.64rem;
-      letter-spacing: 0.22em; text-transform: uppercase;
+      font-family: 'Inter', sans-serif; font-size: 0.62rem;
+      letter-spacing: 0.24em; text-transform: uppercase;
       color: var(--white); margin-bottom: 1.1rem; font-weight: 500;
     }
     .footer a {
-      display: block; color: rgba(255,255,255,0.5); text-decoration: none;
-      font-size: 0.8rem; margin-bottom: 0.55rem;
+      display: block; color: rgba(255,255,255,0.4); text-decoration: none;
+      font-size: 0.78rem; margin-bottom: 0.55rem;
       transition: color 0.3s; font-weight: 300;
     }
     .footer a:hover { color: var(--cognac); }
     .footer-bottom {
       max-width: 1400px; margin: 0 auto;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      border-top: 1px solid rgba(255,255,255,0.06);
       padding: 1.5rem 2rem 0;
       display: flex; justify-content: space-between;
       flex-wrap: wrap; gap: 1rem;
-      font-size: 0.72rem; color: rgba(255,255,255,0.3);
+      font-size: 0.7rem; color: rgba(255,255,255,0.2);
     }
     .footer-pay { display: flex; gap: 0.5rem; }
     .footer-pay span {
-      background: rgba(255,255,255,0.08); padding: 0.25rem 0.55rem;
-      border-radius: 2px; font-size: 0.58rem; letter-spacing: 0.08em;
+      background: rgba(255,255,255,0.06); padding: 0.25rem 0.55rem;
+      border-radius: 2px; font-size: 0.56rem; letter-spacing: 0.08em;
+    }
+
+    /* === BACK TO TOP === */
+    .back-top {
+      position: fixed; bottom: 2rem; left: 2rem; z-index: 900;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--white); border: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: var(--ink);
+      opacity: 0; transform: translateY(20px);
+      transition: all 0.4s;
+      pointer-events: none;
+    }
+    .back-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .back-top:hover { background: var(--espresso); color: var(--white); border-color: var(--espresso); }
+
+    /* === SEARCH OVERLAY === */
+    .search-overlay {
+      position: fixed; inset: 0; z-index: 5000;
+      background: var(--paper);
+      display: none; flex-direction: column; padding: 2rem;
+    }
+    .search-overlay.open { display: flex; }
+    .search-overlay .search-header {
+      display: flex; justify-content: space-between; align-items: center;
+      max-width: 800px; margin: 0 auto 2rem; width: 100%;
+    }
+    .search-overlay .search-header h3 {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--espresso);
+    }
+    .search-overlay .search-close {
+      background: none; border: none; font-size: 1.5rem; color: var(--taupe);
+    }
+    .search-overlay .search-input-wrap {
+      max-width: 800px; margin: 0 auto 2rem; width: 100%;
+      display: flex; border-bottom: 2px solid var(--espresso);
+    }
+    .search-overlay .search-input-wrap input {
+      flex: 1; padding: 0.85rem 0; border: none; background: transparent;
+      font-family: 'Cormorant Garamond', serif; font-size: 1.6rem;
+      color: var(--espresso); outline: none;
+    }
+    .search-overlay .search-input-wrap input::placeholder { color: var(--muted); }
+    .search-overlay .search-input-wrap button {
+      background: none; border: none; font-size: 1.2rem; color: var(--taupe);
+    }
+    .search-results {
+      max-width: 800px; margin: 0 auto; width: 100%;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem; overflow-y: auto; max-height: 60vh;
+    }
+    .search-result-item {
+      display: flex; gap: 0.75rem; padding: 0.75rem;
+      border: 1px solid var(--line); cursor: pointer; transition: border-color 0.2s;
+      background: var(--white);
+    }
+    .search-result-item:hover { border-color: var(--cognac); }
+    .search-result-item img { width: 60px; height: 80px; object-fit: cover; background: var(--stone); }
+    .search-result-item .info h5 { font-family: 'Cormorant Garamond', serif; font-size: 0.85rem; color: var(--espresso); font-weight: 500; }
+    .search-result-item .info .cat { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--taupe); }
+    .search-result-item .info .price { font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; color: var(--cognac); }
+    .search-no-results { text-align: center; color: var(--taupe); font-size: 0.9rem; padding: 2rem; }
+
+    /* === CHECKOUT MODAL === */
+    .checkout-overlay {
+      position: fixed; inset: 0; z-index: 6000;
+      background: rgba(42,37,32,0.6);
+      backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      padding: 2rem;
+    }
+    .checkout-overlay.open { display: flex; }
+    .checkout-modal {
+      background: var(--paper); max-width: 560px; width: 100%;
+      padding: 2.5rem; animation: qvIn 0.4s ease;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .checkout-modal h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--espresso); margin-bottom: 0.3rem; }
+    .checkout-modal .checkout-sub { font-size: 0.78rem; color: var(--taupe); margin-bottom: 1.5rem; }
+    .checkout-modal .checkout-summary { margin-bottom: 1.5rem; padding: 1rem; background: var(--bg); }
+    .checkout-modal .checkout-summary .row { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 0.35rem 0; color: var(--ink); }
+    .checkout-modal .checkout-summary .row.total { border-top: 1px solid var(--line); margin-top: 0.5rem; padding-top: 0.75rem; font-weight: 600; }
+    .checkout-modal .form-group { margin-bottom: 1rem; }
+    .checkout-modal .form-group label { display: block; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--taupe); margin-bottom: 0.3rem; font-weight: 500; }
+    .checkout-modal .form-group input, .checkout-modal .form-group select {
+      width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--line);
+      font-family: 'Inter', sans-serif; font-size: 0.82rem; color: var(--espresso);
+      background: var(--white); outline: none;
+    }
+    .checkout-modal .form-group input:focus { border-color: var(--cognac); }
+    .checkout-modal .checkout-pay-btn {
+      width: 100%; padding: 0.9rem; text-align: center;
+      background: var(--espresso); color: var(--white); border: none;
+      font-size: 0.64rem; letter-spacing: 0.22em; text-transform: uppercase;
+      font-weight: 500; font-family: 'Inter', sans-serif; transition: background 0.3s;
+    }
+    .checkout-modal .checkout-pay-btn:hover { background: var(--cognac); }
+    .checkout-modal .checkout-close {
+      float: right; background: none; border: none; font-size: 1.2rem; color: var(--taupe);
+    }
+    .checkout-modal .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 768px) {
+      .checkout-modal .form-row-2 { grid-template-columns: 1fr; }
+      .checkout-modal { padding: 1.5rem; }
+      .search-overlay { padding: 1rem; }
+      .search-overlay .search-input-wrap input { font-size: 1.2rem; }
+      .search-results { grid-template-columns: 1fr; }
+    }
+
+    /* === EVENT POPUP === */
+    .event-popup-overlay {
+      position: fixed; inset: 0; z-index: 8000;
+      background: rgba(42,37,32,0.7);
+      backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center;
+      padding: 2rem;
+    }
+    .event-popup-overlay.open { display: flex; }
+    .event-popup {
+      background: var(--paper); max-width: 520px; width: 100%;
+      position: relative; animation: qvIn 0.5s ease;
+      overflow: hidden;
+    }
+    .event-popup-img {
+      width: 100%; height: 220px; object-fit: cover; display: block;
+      background: var(--stone);
+    }
+    .event-popup-body { padding: 2rem; }
+    .event-popup-body .badge {
+      display: inline-block; background: var(--cognac); color: var(--white);
+      font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase;
+      padding: 0.25rem 0.6rem; margin-bottom: 0.75rem; font-weight: 500;
+    }
+    .event-popup-body h3 {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.4rem;
+      color: var(--espresso); margin-bottom: 0.4rem; font-weight: 500;
+    }
+    .event-popup-body h3 em { font-style: italic; color: var(--cognac); }
+    .event-popup-body p {
+      font-size: 0.82rem; color: var(--ink); line-height: 1.7;
+      margin-bottom: 1rem; font-weight: 300;
+    }
+    .event-popup-body .event-popup-meta {
+      display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem;
+    }
+    .event-popup-body .event-popup-meta span {
+      font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--taupe);
+    }
+    .event-popup-body .event-popup-meta strong {
+      display: block; color: var(--espresso); font-weight: 500;
+      font-family: 'Cormorant Garamond', serif; font-size: 0.9rem;
+    }
+    .event-popup-body .popup-cta-group { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .event-popup-body .popup-cta {
+      display: inline-block; padding: 0.8rem 1.8rem;
+      border: 1px solid var(--espresso); color: var(--espresso);
+      text-decoration: none; font-size: 0.6rem;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      font-weight: 500; transition: all 0.3s; font-family: 'Inter', sans-serif;
+    }
+    .event-popup-body .popup-cta:hover { background: var(--espresso); color: var(--white); }
+    .event-popup-body .popup-cta-primary {
+      background: var(--cognac); border-color: var(--cognac); color: var(--white);
+    }
+    .event-popup-body .popup-cta-primary:hover { background: var(--cognac-dk); }
+    .event-popup-close {
+      position: absolute; top: 0.75rem; right: 0.75rem;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.9); border: none;
+      font-size: 1rem; display: flex; align-items: center; justify-content: center;
+      color: var(--ink); z-index: 5; cursor: pointer;
+    }
+    .event-popup-dismiss {
+      text-align: center; margin-top: 1rem;
+    }
+    .event-popup-dismiss button {
+      background: none; border: none; font-size: 0.65rem;
+      color: var(--taupe); text-decoration: underline; cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    @media (max-width: 768px) {
+      .event-popup { margin: 1rem; }
+      .event-popup-img { height: 160px; }
+      .event-popup-body { padding: 1.25rem; }
+      .event-popup-body h3 { font-size: 1.1rem; }
     }
 
     /* === TOAST === */
@@ -691,14 +1164,28 @@
       position: fixed; bottom: 2rem; right: 2rem;
       background: var(--espresso); color: var(--white);
       padding: 0.9rem 1.4rem; border-left: 3px solid var(--cognac);
-      font-size: 0.8rem; z-index: 2000;
-      transform: translateX(120%); transition: transform 0.4s ease;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      font-size: 0.78rem; z-index: 2000;
+      transform: translateX(120%); transition: transform 0.45s ease;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
     }
     .toast.show { transform: translateX(0); }
 
-    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.9s cubic-bezier(0.22,1,0.36,1); }
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.22,1,0.36,1); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.15s; }
+    .reveal-delay-2 { transition-delay: 0.3s; }
+    .reveal-delay-3 { transition-delay: 0.45s; }
+
+    /* === LOADER === */
+    .page-loader {
+      position: fixed; inset: 0; z-index: 999999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.8s ease;
+    }
+    .page-loader.hidden { opacity: 0; pointer-events: none; }
+    .page-loader .loader-logo { height: 32px; width: auto; opacity: 0; animation: loaderPulse 1.2s ease infinite; }
+    @keyframes loaderPulse { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
 
     @media (max-width: 1024px) {
       .nav-left { display: none; }
@@ -715,26 +1202,62 @@
       .event-details-grid { grid-template-columns: 1fr; gap: 2.5rem; }
       .event-details-sidebar { position: static; }
       .event-highlights { grid-template-columns: 1fr 1fr; }
+      .qv-modal { grid-template-columns: 1fr; max-height: 90vh; }
+      .qv-image { min-height: 300px; }
+      .lookbook { grid-template-columns: 1fr 1fr; grid-template-rows: 240px 240px; }
+      .lookbook-item:first-child { grid-row: span 1; }
+      .ctl-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 768px) {
       .nav-right a:not(.cart) { display: none; }
       .mobile-toggle { display: block; }
       .header { padding: 0.9rem 1.25rem; }
       .section { padding: 3.5rem 0; }
-      .product { flex: 0 0 calc(50% - 0.625rem); min-width: 160px; }
-      .carousel { padding: 0 1.25rem; }
+      .product { flex: 0 0 calc(50% - 0.625rem); min-width: 140px; }
+      .product-img .add-layer { transform: translateY(0); position: relative; }
+      .product:hover .product-img .add-layer { transform: translateY(0); }
+      .product-img .add-layer .size-select { display: none; }
+      .product-img .add-layer .add { padding: 0.65rem; font-size: 0.55rem; }
+      .product:hover .wishlist-btn { opacity: 0; }
+      .wishlist-btn { opacity: 0; display: none; }
+      .carousel { gap: 0.75rem; padding: 0 1rem; }
+      .carousel-arrow { display: none; }
       .services { grid-template-columns: 1fr; }
       .footer-grid { grid-template-columns: 1fr; }
       .footer-bottom { flex-direction: column; }
-      .utility { font-size: 0.55rem; padding: 0.4rem 1rem; }
+      .utility { font-size: 0.52rem; padding: 0.4rem 1rem; }
       .utility .left { gap: 0.75rem; }
-      .mini-cart { width: 300px; right: -2rem; }
+      .mini-cart { width: 300px; right: -1rem; }
       .event-highlights { grid-template-columns: 1fr; }
-      .event-hero-content .cta { display: block; margin-right: 0; }
+      .event-cta-group .cta { width: 100%; text-align: center; }
+      .qv-details { padding: 1.5rem; }
+      .lookbook { grid-template-columns: 1fr 1fr; grid-template-rows: 140px 140px; }
+      .ctl-grid { grid-template-columns: 1fr; max-width: 320px; }
+      .tile { height: 300px; }
+      .tile .info { bottom: 1.5rem; left: 1.5rem; right: 1.5rem; }
+      .tile .info h3 { font-size: 1.4rem; }
+      .product h4 { font-size: 0.85rem; }
+      .product .price { font-size: 0.9rem; }
+      .sec-head h2 { font-size: 1.6rem; }
+      .content-banner .banner-content h2 { font-size: 1.4rem; }
+      .hero-content h1 { font-size: clamp(2rem, 8vw, 3rem); }
+      .hero-content .hero-cta { padding: 0.75rem 1.5rem; font-size: 0.58rem; }
+      .lookbook-item .ov { opacity: 1; background: rgba(42,37,32,0.1); }
+      .lookbook-item .ov span { font-size: 0.8rem; }
+      .news-form { flex-direction: column; }
+      .news-form input { border-right: 1px solid rgba(255,255,255,0.2); border-bottom: none; }
+      .news-form button { padding: 0.85rem; }
+      .insta-grid { grid-template-columns: repeat(2, 1fr); }
+      .back-top { bottom: 1rem; left: 1rem; width: 38px; height: 38px; font-size: 0.85rem; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Loader -->
+  <div class="page-loader" id="pageLoader">
+    <img src="amora-imani-logo.png" alt="" class="loader-logo">
+  </div>
 
   <!-- Utility bar -->
   <div class="utility">
@@ -743,7 +1266,7 @@
       <a href="#">Track Order</a>
       <a href="#">Store Locator</a>
     </div>
-    <div class="promo">Complimentary Shipping on Orders Over £150</div>
+    <div class="promo">Free Delivery on Orders Over £150</div>
     <div class="right">
       <a href="#">UK / £ GBP</a>
       <a href="#">Newsletter</a>
@@ -751,12 +1274,15 @@
   </div>
 
   <!-- Header -->
-  <header class="header">
+  <header class="header" id="header">
     <nav class="nav-left">
+      <a href="#new">What's New</a>
       <a href="#dresses">Dresses</a>
       <a href="#jewellery">Jewellery</a>
       <a href="#watches">Watches</a>
-      <a href="#hero">The World of Amora</a>
+      <a href="#sale">Sale</a>
+      <a href="#gifts">Gifts</a>
+      <a href="#events">Events</a>
     </nav>
     <a href="#" class="logo"><img src="amora-imani-logo.png" alt="Amora Imani"></a>
     <div class="nav-right">
@@ -781,12 +1307,24 @@
     </div>
   </header>
 
+  <!-- Full-Screen Mobile Nav -->
+  <div class="nav-overlay" id="navOverlay">
+    <button class="nav-overlay-close" id="navOverlayClose">&times;</button>
+    <a href="#new" onclick="closeNav()">What's New</a>
+    <a href="#dresses" onclick="closeNav()">Dresses</a>
+    <a href="#jewellery" onclick="closeNav()">Jewellery</a>
+    <a href="#watches" onclick="closeNav()">Watches</a>
+    <a href="#sale" onclick="closeNav()">Sale</a>
+    <a href="#gifts" onclick="closeNav()">Gifts</a>
+    <a href="#events" onclick="closeNav()">Events</a>
+  </div>
+
   <!-- Hero -->
   <section class="hero" id="hero">
     <video class="hero-video" autoplay muted loop playsinline>
       <source src="amora video.mp4" type="video/mp4">
     </video>
-    <div class="hero-ov"></div>
+    <div class="hero-overlay"></div>
     <div class="hero-slide active">
       <div class="hero-content">
         <span class="kicker">Autumn / Winter 2026</span>
@@ -811,6 +1349,10 @@
     <div class="hero-dots">
       <span class="active"></span><span></span><span></span>
     </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="line"></div>
+    </div>
   </section>
 
   <!-- Services -->
@@ -821,6 +1363,68 @@
     <div class="srv"><span class="ic">&#x1F30D;</span><h4>Worldwide Delivery</h4><p>Ship to 80+ countries</p></div>
   </div>
 
+  <!-- Banner: Jewellery -->
+  <section class="content-banner" style="border-bottom: 1px solid var(--line-lt);">
+    <div class="bg" style="background-image: url('https://amoraimani.com/wp-content/uploads/2020/10/IMG_20190822_163831_Bokeh.jpg');"></div>
+    <div class="ov"></div>
+    <div style="position: relative; z-index: 2; width: 100%;">
+      <div class="banner-content reveal">
+        <span class="kicker">DS Jewellery Atelier</span>
+        <h2>Our <em>Jewellery</em></h2>
+        <p>Browse our selection of flamboyant feather and crystal jewellery — rings, necklaces, bracelets and earrings crafted in precious metals.</p>
+        <a href="https://amoraimani.com/product-category/jewellery/" class="banner-cta" target="_blank">Shop Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Banner: Luxury Gown Hire -->
+  <section class="content-banner" style="background: var(--paper);">
+    <div style="position: relative; z-index: 2; width: 100%;">
+      <div class="banner-content reveal" style="color: var(--espresso); max-width: 540px;">
+        <span class="kicker" style="color: var(--cognac);">Bespoke & Hire</span>
+        <h2 style="color: var(--espresso);">Luxury Gown <em>Hire</em></h2>
+        <p style="color: var(--taupe);">Get your luxurious, expensive and unique gown at our Knightsbridge boutique location. Perfect for events, galas, and special occasions.</p>
+        <a href="https://amoraimani.com/made-to-measure/" class="banner-cta" style="border-color: var(--espresso); color: var(--espresso);" target="_blank">Find out More</a>
+      </div>
+    </div>
+    <div class="bg" style="background-image: url('https://amoraimani.com/wp-content/uploads/2021/10/amoraimani-dresses-1199x800.jpg'); background-position: right center;"></div>
+    <div class="ov" style="background: linear-gradient(270deg, rgba(42,37,32,0.1) 0%, transparent 60%);"></div>
+  </section>
+
+  <!-- Banner: Sale -->
+  <section class="content-banner" id="sale">
+    <div class="bg" style="background-image: url('https://amoraimani.com/wp-content/uploads/2021/02/sale-slider3.jpg');"></div>
+    <div class="ov ov-dark"></div>
+    <div style="position: relative; z-index: 2; width: 100%;">
+      <div class="banner-content reveal">
+        <span class="kicker">Seasonal Offers</span>
+        <h2>What's on <em>Sale</em></h2>
+        <p>Check out our amazing dresses, watches and jewellery on sale now — limited stock available.</p>
+        <a href="https://amoraimani.com/product-category/sale/" class="banner-cta banner-cta-primary" target="_blank">Shop Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Banner: Face Masks / Shop Occasion -->
+  <section class="content-banner" style="background: var(--paper);">
+    <div style="position: relative; z-index: 2; width: 100%;">
+      <div class="banner-content reveal" style="color: var(--espresso); max-width: 500px;">
+        <span class="kicker" style="color: var(--cognac);">Every Occasion</span>
+        <h2 style="color: var(--espresso);">Shop for Every <em>Occasion</em></h2>
+        <p style="color: var(--taupe);">Getting ready for the big day or your big nights out, we've got you covered. Wedding, party, evening, bridesmaid — find your silhouette.</p>
+        <a href="https://amoraimani.com/shop/" class="banner-cta" style="border-color: var(--espresso); color: var(--espresso);" target="_blank">Shop Now</a>
+      </div>
+    </div>
+    <div class="bg" style="background-image: url('https://amoraimani.com/wp-content/uploads/2020/07/dress043.jpg'); background-position: left center;"></div>
+    <div class="ov" style="background: linear-gradient(270deg, rgba(42,37,32,0.05) 0%, transparent 50%);"></div>
+  </section>
+
+  <!-- Donate: King's Trust -->
+  <section class="donate-section">
+    <h3>Donate Below To The King's Trust</h3>
+    <a href="https://www.kingstrust.org.uk/" class="donate-btn" target="_blank">Donate</a>
+  </section>
+
   <!-- New Arrivals — Carousel -->
   <section class="section" id="new">
     <div class="sec-head reveal">
@@ -829,92 +1433,134 @@
       <p class="sub">The latest pieces from our collection</p>
       <a href="https://amoraimani.com/shop/" class="view-all" target="_blank">View All</a>
     </div>
-    <div class="carousel-wrap reveal">
+    <div class="carousel-wrap">
       <button class="carousel-arrow prev" onclick="scrollCarousel('new-carousel', -1)">&#x2039;</button>
       <div class="carousel" id="new-carousel">
-        <div class="product" data-name="Brietling Superocean 44" data-price="2999" data-img="https://amoraimani.com/wp-content/uploads/2026/04/Image-3-2-1024x1024.jpeg">
+        <div class="product" data-name="Brietling Superocean 44" data-price="2999" data-img="https://amoraimani.com/wp-content/uploads/2026/04/Image-3-2-1024x1024.jpeg" data-cat="Watches" data-old="3999">
           <div class="product-img">
             <span class="badge">Sale</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2026/04/Image-3-2-1024x1024.jpeg" alt="Brietling Superocean 44" loading="lazy">
             <div class="add-layer">
               <div class="size-select" data-name="Brietling Superocean 44" data-price="2999"></div>
-              <button class="add" onclick="addToCart('Brietling Superocean 44', 2999)">Add to Cart</button>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Brietling Superocean 44', 2999)">Add to Cart</button>
             </div>
           </div>
           <p class="product-cat">Watches</p>
           <h4>Brietling Superocean 44</h4>
           <p class="price"><span class="old">£3,999</span><span class="sale">£2,999</span></p>
         </div>
-        <div class="product" data-name="Tag Heuer Bamford" data-price="799" data-img="https://amoraimani.com/wp-content/uploads/2026/04/Image-1024x1024.jpeg">
+        <div class="product" data-name="Tag Heuer Bamford" data-price="799" data-img="https://amoraimani.com/wp-content/uploads/2026/04/Image-1024x1024.jpeg" data-cat="Watches" data-old="1400">
           <div class="product-img">
             <span class="badge">Sale</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2026/04/Image-1024x1024.jpeg" alt="Tag Heuer Bamford" loading="lazy">
             <div class="add-layer">
               <div class="size-select" data-name="Tag Heuer Bamford" data-price="799"></div>
-              <button class="add" onclick="addToCart('Tag Heuer Bamford', 799)">Add to Cart</button>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Tag Heuer Bamford', 799)">Add to Cart</button>
             </div>
           </div>
           <p class="product-cat">Watches</p>
           <h4>Tag Heuer Bamford</h4>
           <p class="price"><span class="old">£1,400</span><span class="sale">£799</span></p>
         </div>
-        <div class="product" data-name="Aurora Dress" data-price="450" data-img="https://amoraimani.com/wp-content/uploads/2022/08/Facetune-09-08-2022-17-40-49-scaled.jpg">
+        <div class="product" data-name="Aurora Dress" data-price="450" data-img="https://amoraimani.com/wp-content/uploads/2022/08/Facetune-09-08-2022-17-40-49-scaled.jpg" data-cat="Dresses" data-old="">
           <div class="product-img">
             <span class="badge new">New</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2022/08/Facetune-09-08-2022-17-40-49-scaled.jpg" alt="Aurora Dress" loading="lazy">
             <div class="add-layer">
               <div class="size-select" data-name="Aurora Dress" data-price="450"></div>
-              <button class="add" onclick="addToCart('Aurora Dress', 450)">Add to Cart</button>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Aurora Dress', 450)">Add to Cart</button>
             </div>
           </div>
           <p class="product-cat">Dresses</p>
           <h4>Aurora</h4>
           <p class="price">£450</p>
         </div>
-        <div class="product" data-name="7.59ct Citrine Ring" data-price="2149" data-img="https://amoraimani.com/wp-content/uploads/2024/07/cit1.jpg">
+        <div class="product" data-name="7.59ct Citrine Ring" data-price="2149" data-img="https://amoraimani.com/wp-content/uploads/2024/07/cit1.jpg" data-cat="Jewellery" data-old="2699">
           <div class="product-img">
             <span class="badge">Sale</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2024/07/cit1.jpg" alt="Citrine Diamond Ring" loading="lazy">
             <div class="add-layer">
               <div class="size-select" data-name="7.59ct Citrine Ring" data-price="2149"></div>
-              <button class="add" onclick="addToCart('7.59ct Citrine Ring', 2149)">Add to Cart</button>
+              <button class="add" onclick="event.stopPropagation(); addToCart('7.59ct Citrine Ring', 2149)">Add to Cart</button>
             </div>
           </div>
           <p class="product-cat">Jewellery</p>
           <h4>7.59ct Citrine Diamond Ring</h4>
           <p class="price"><span class="old">£2,699</span><span class="sale">£2,149</span></p>
         </div>
-        <div class="product" data-name="Tag Heuer Red Bull F1" data-price="899" data-img="https://amoraimani.com/wp-content/uploads/2025/12/Image-7-1024x1024.jpeg">
+        <div class="product" data-name="Tag Heuer Red Bull F1" data-price="899" data-img="https://amoraimani.com/wp-content/uploads/2025/12/Image-7-1024x1024.jpeg" data-cat="Watches" data-old="1999">
           <div class="product-img">
             <span class="badge">Sale</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2025/12/Image-7-1024x1024.jpeg" alt="Tag Heuer F1" loading="lazy">
             <div class="add-layer">
               <div class="size-select" data-name="Tag Heuer Red Bull F1" data-price="899"></div>
-              <button class="add" onclick="addToCart('Tag Heuer Red Bull F1', 899)">Add to Cart</button>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Tag Heuer Red Bull F1', 899)">Add to Cart</button>
             </div>
           </div>
           <p class="product-cat">Watches</p>
           <h4>Tag Heuer Red Bull F1</h4>
           <p class="price"><span class="old">£1,999</span><span class="sale">£899</span></p>
         </div>
-        <div class="product" data-name="Zelda Dress" data-price="600" data-img="https://amoraimani.com/wp-content/uploads/2023/10/IMG_3099-scaled-819x1024.jpg">
+        <div class="product" data-name="Zelda Dress" data-price="600" data-img="https://amoraimani.com/wp-content/uploads/2023/10/IMG_3099-scaled-819x1024.jpg" data-cat="Bridesmaid" data-old="">
           <div class="product-img">
             <span class="badge new">New</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2023/10/IMG_3099-scaled-819x1024.jpg" alt="Zelda Dress" loading="lazy">
             <div class="add-layer">
               <div class="size-select" data-name="Zelda Dress" data-price="600"></div>
-              <button class="add" onclick="addToCart('Zelda Dress', 600)">Add to Cart</button>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Zelda Dress', 600)">Add to Cart</button>
             </div>
           </div>
           <p class="product-cat">Bridesmaid</p>
           <h4>Zelda</h4>
           <p class="price">£600</p>
+        </div>
+        <div class="product" data-name="Chandelier Earrings" data-price="39.99" data-img="https://amoraimani.com/wp-content/uploads/2021/06/chandelier-babyblue-300x525.jpg" data-cat="Jewellery" data-old="">
+          <div class="product-img">
+            <span class="badge new">New</span>
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2021/06/chandelier-babyblue-300x525.jpg" alt="Chandelier Earrings" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Chandelier Earrings" data-price="39.99"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Chandelier Earrings', 39.99)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Jewellery</p>
+          <h4>Chandelier Earrings</h4>
+          <p class="price">£39.99</p>
+        </div>
+        <div class="product" data-name="Star Tassel Earrings" data-price="39.99" data-img="https://amoraimani.com/wp-content/uploads/2021/06/IMG_4721-1-300x260.jpg" data-cat="Jewellery" data-old="">
+          <div class="product-img">
+            <span class="badge new">New</span>
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2021/06/IMG_4721-1-300x260.jpg" alt="Star Tassel Earrings" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Star Tassel Earrings" data-price="39.99"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Star Tassel Earrings', 39.99)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Jewellery</p>
+          <h4>Star Tassel Earrings</h4>
+          <p class="price">£39.99</p>
+        </div>
+        <div class="product" data-name="Minerva Earrings" data-price="24.99" data-img="https://amoraimani.com/wp-content/uploads/2020/10/WhatsApp-Image-2020-07-30-at-3.43.21-PM-9-300x400.jpg" data-cat="Jewellery" data-old="">
+          <div class="product-img">
+            <span class="badge new">New</span>
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2020/10/WhatsApp-Image-2020-07-30-at-3.43.21-PM-9-300x400.jpg" alt="Minerva Earrings" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Minerva Earrings" data-price="24.99"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Minerva Earrings', 24.99)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Jewellery</p>
+          <h4>Minerva Earrings</h4>
+          <p class="price">£24.99</p>
         </div>
       </div>
       <button class="carousel-arrow next" onclick="scrollCarousel('new-carousel', 1)">&#x203A;</button>
@@ -953,78 +1599,330 @@
       <p class="sub">Our most coveted pieces this season</p>
       <a href="https://amoraimani.com/shop/" class="view-all" target="_blank">View All</a>
     </div>
-    <div class="carousel-wrap reveal">
+    <div class="carousel-wrap">
       <button class="carousel-arrow prev" onclick="scrollCarousel('best-carousel', -1)">&#x2039;</button>
       <div class="carousel" id="best-carousel">
-        <div class="product" data-name="Tag Heuer Ladies Diamond" data-price="1999" data-img="https://amoraimani.com/wp-content/uploads/2025/06/tag-ladies-steel.jpg">
+        <div class="product" data-name="Tag Heuer Ladies Diamond" data-price="1999" data-img="https://amoraimani.com/wp-content/uploads/2025/06/tag-ladies-steel.jpg" data-cat="Watches" data-old="3999">
           <div class="product-img">
             <span class="badge">Sale</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2025/06/tag-ladies-steel.jpg" alt="Tag Heuer Ladies Diamond" loading="lazy">
             <div class="add-layer">
               <div class="size-select" data-name="Tag Heuer Ladies Diamond" data-price="1999"></div>
-              <button class="add" onclick="addToCart('Tag Heuer Ladies Diamond', 1999)">Add to Cart</button>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Tag Heuer Ladies Diamond', 1999)">Add to Cart</button>
             </div>
           </div>
           <p class="product-cat">Watches</p>
           <h4>Tag Heuer Ladies Diamond</h4>
           <p class="price"><span class="old">£3,999</span><span class="sale">£1,999</span></p>
         </div>
-        <div class="product" data-name="The Mystic Ring" data-price="124" data-img="https://amoraimani.com/wp-content/uploads/2023/07/TheMYSTICRinge.jpeg">
+        <div class="product" data-name="The Mystic Ring" data-price="124" data-img="https://amoraimani.com/wp-content/uploads/2023/07/TheMYSTICRinge.jpeg" data-cat="Jewellery" data-old="">
           <div class="product-img">
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2023/07/TheMYSTICRinge.jpeg" alt="The Mystic Ring" loading="lazy">
             <div class="add-layer">
               <div class="size-select" data-name="The Mystic Ring" data-price="124"></div>
-              <button class="add" onclick="addToCart('The Mystic Ring', 124)">Add to Cart</button>
+              <button class="add" onclick="event.stopPropagation(); addToCart('The Mystic Ring', 124)">Add to Cart</button>
             </div>
           </div>
           <p class="product-cat">Jewellery</p>
           <h4>The Mystic Ring</h4>
           <p class="price">£124</p>
         </div>
-        <div class="product" data-name="Layla Dress" data-price="300" data-img="https://amoraimani.com/wp-content/uploads/2022/08/MGM6293-scaled.jpg">
+        <div class="product" data-name="Layla Dress" data-price="300" data-img="https://amoraimani.com/wp-content/uploads/2022/08/MGM6293-scaled.jpg" data-cat="Dresses" data-old="">
           <div class="product-img">
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2022/08/MGM6293-scaled.jpg" alt="Layla Dress" loading="lazy">
             <div class="add-layer">
               <div class="size-select" data-name="Layla Dress" data-price="300"></div>
-              <button class="add" onclick="addToCart('Layla Dress', 300)">Add to Cart</button>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Layla Dress', 300)">Add to Cart</button>
             </div>
           </div>
           <p class="product-cat">Dresses</p>
           <h4>Layla</h4>
           <p class="price">£300</p>
         </div>
-        <div class="product" data-name="Citrine Ring 14ct" data-price="2149" data-img="https://amoraimani.com/wp-content/uploads/2024/07/cit3.jpg">
+        <div class="product" data-name="Citrine Ring 14ct" data-price="2149" data-img="https://amoraimani.com/wp-content/uploads/2024/07/cit3.jpg" data-cat="Jewellery" data-old="2699">
           <div class="product-img">
             <span class="badge">Sale</span>
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2024/07/cit3.jpg" alt="Citrine Ring 14ct" loading="lazy">
             <div class="add-layer">
               <div class="size-select" data-name="Citrine Ring 14ct" data-price="2149"></div>
-              <button class="add" onclick="addToCart('Citrine Ring 14ct', 2149)">Add to Cart</button>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Citrine Ring 14ct', 2149)">Add to Cart</button>
             </div>
           </div>
           <p class="product-cat">Jewellery</p>
           <h4>Citrine Diamond Ring 14ct</h4>
           <p class="price"><span class="old">£2,699</span><span class="sale">£2,149</span></p>
         </div>
-        <div class="product" data-name="1.25ct Ruby 18K Gold" data-price="5999" data-img="https://amoraimani.com/wp-content/uploads/2023/07/image-2023-07-02T195039.445.jpeg">
+        <div class="product" data-name="1.25ct Ruby 18K Gold" data-price="5999" data-img="https://amoraimani.com/wp-content/uploads/2023/07/image-2023-07-02T195039.445.jpeg" data-cat="Jewellery" data-old="">
           <div class="product-img">
             <button class="wishlist-btn">&#x2661;</button>
             <img src="https://amoraimani.com/wp-content/uploads/2023/07/image-2023-07-02T195039.445.jpeg" alt="1.25ct Ruby 18K Gold" loading="lazy">
             <div class="add-layer">
               <div class="size-select" data-name="1.25ct Ruby 18K Gold" data-price="5999"></div>
-              <button class="add" onclick="addToCart('1.25ct Ruby 18K Gold', 5999)">Add to Cart</button>
+              <button class="add" onclick="event.stopPropagation(); addToCart('1.25ct Ruby 18K Gold', 5999)">Add to Cart</button>
             </div>
           </div>
           <p class="product-cat">Jewellery</p>
           <h4>1.25ct Ruby 18K Gold</h4>
           <p class="price">£5,999</p>
         </div>
+        <div class="product" data-name="Tag Heuer Red Aquaracer" data-price="999" data-img="https://amoraimani.com/wp-content/uploads/2025/12/Image-2-3-300x300.jpeg" data-cat="Watches" data-old="1499">
+          <div class="product-img">
+            <span class="badge">Sale</span>
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2025/12/Image-2-3-300x300.jpeg" alt="Tag Heuer Red Aquaracer" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Tag Heuer Red Aquaracer" data-price="999"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Tag Heuer Red Aquaracer', 999)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Watches</p>
+          <h4>Tag Heuer Red Aquaracer</h4>
+          <p class="price"><span class="old">£1,499</span><span class="sale">£999</span></p>
+        </div>
+        <div class="product" data-name="Tag Heuer Aquaracer F1 Mens" data-price="899" data-img="https://amoraimani.com/wp-content/uploads/2025/12/Image-1-1-300x300.jpeg" data-cat="Watches" data-old="1399">
+          <div class="product-img">
+            <span class="badge">Sale</span>
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2025/12/Image-1-1-300x300.jpeg" alt="Tag Heuer Aquaracer F1" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Tag Heuer Aquaracer F1 Mens" data-price="899"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Tag Heuer Aquaracer F1 Mens', 899)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Watches</p>
+          <h4>Tag Heuer Aquaracer F1</h4>
+          <p class="price"><span class="old">£1,399</span><span class="sale">£899</span></p>
+        </div>
+        <div class="product" data-name="Tag Heuer X Gulf Edition" data-price="1100" data-img="https://amoraimani.com/wp-content/uploads/2025/12/Image-12-300x300.jpeg" data-cat="Watches" data-old="1599">
+          <div class="product-img">
+            <span class="badge">Sale</span>
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2025/12/Image-12-300x300.jpeg" alt="Tag Heuer X Gulf" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Tag Heuer X Gulf Edition" data-price="1100"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Tag Heuer X Gulf Edition', 1100)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Watches</p>
+          <h4>Tag Heuer X Gulf Edition</h4>
+          <p class="price"><span class="old">£1,599</span><span class="sale">£1,100</span></p>
+        </div>
+        <div class="product" data-name="Moissanite Diamond Watch" data-price="2200" data-img="https://amoraimani.com/wp-content/uploads/2024/04/S7a67aca7ece94ea4ac7e5822e3c106ca8-300x300.jpg" data-cat="Watches" data-old="3250">
+          <div class="product-img">
+            <span class="badge">Sale</span>
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2024/04/S7a67aca7ece94ea4ac7e5822e3c106ca8-300x300.jpg" alt="Moissanite Diamond Watch" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Moissanite Diamond Watch" data-price="2200"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Moissanite Diamond Watch', 2200)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Watches</p>
+          <h4>Custom Moissanite Diamond Watch</h4>
+          <p class="price"><span class="old">£3,250</span><span class="sale">£2,200</span></p>
+        </div>
+        <div class="product" data-name="Citrine Ring 18k Gold" data-price="1899" data-img="https://amoraimani.com/wp-content/uploads/2022/07/IMG_4502-1-scaled-300x400.jpg" data-cat="Jewellery" data-old="2300">
+          <div class="product-img">
+            <span class="badge">Sale</span>
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2022/07/IMG_4502-1-scaled-300x400.jpg" alt="Citrine Ring" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Citrine Ring 18k Gold" data-price="1899"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Citrine Ring 18k Gold', 1899)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Jewellery</p>
+          <h4>Citrine Ring 18k Yellow Gold</h4>
+          <p class="price"><span class="old">£2,300</span><span class="sale">£1,899</span></p>
+        </div>
       </div>
       <button class="carousel-arrow next" onclick="scrollCarousel('best-carousel', 1)">&#x203A;</button>
+    </div>
+  </section>
+
+  <!-- Gifts Section -->
+  <section class="section" style="background: var(--paper);" id="gifts">
+    <div class="sec-head reveal">
+      <span class="kicker">Perfect Presents</span>
+      <h2>Gift <em>Ideas</em></h2>
+      <p class="sub">Curated gift boxes and bags for every occasion</p>
+      <a href="https://amoraimani.com/gifts/" class="view-all" target="_blank">View All Gifts</a>
+    </div>
+    <div class="carousel-wrap">
+      <button class="carousel-arrow prev" onclick="scrollCarousel('gift-carousel', -1)">&#x2039;</button>
+      <div class="carousel" id="gift-carousel">
+        <div class="product" data-name="Juliette Gift Box" data-price="99.99" data-img="https://amoraimani.com/wp-content/uploads/2025/07/20250528_001903_with_bgc76-300x315.jpg" data-cat="Gifts" data-old="">
+          <div class="product-img">
+            <span class="badge new">Gift</span>
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2025/07/20250528_001903_with_bgc76-300x315.jpg" alt="Juliette Gift Box" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Juliette Gift Box" data-price="99.99"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Juliette Gift Box', 99.99)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Gifts</p>
+          <h4>Juliette Gift Box</h4>
+          <p class="price">£99.99</p>
+        </div>
+        <div class="product" data-name="Juliette Ultimate Gift Box" data-price="159.99" data-img="https://amoraimani.com/wp-content/uploads/2025/07/20250528_002023_with_bgc7656-300x295.jpg" data-cat="Gifts" data-old="">
+          <div class="product-img">
+            <span class="badge new">Gift</span>
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2025/07/20250528_002023_with_bgc7656-300x295.jpg" alt="Juliette Ultimate Gift Box" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Juliette Ultimate Gift Box" data-price="159.99"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Juliette Ultimate Gift Box', 159.99)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Gifts</p>
+          <h4>Juliette Ultimate Gift Box</h4>
+          <p class="price">£159.99</p>
+        </div>
+        <div class="product" data-name="Juliette Elegant Gift Box" data-price="134.99" data-img="https://amoraimani.com/wp-content/uploads/2025/07/20250528_002300_with_bgc2353-300x332.jpg" data-cat="Gifts" data-old="">
+          <div class="product-img">
+            <span class="badge new">Gift</span>
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2025/07/20250528_002300_with_bgc2353-300x332.jpg" alt="Juliette Elegant Gift Box" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Juliette Elegant Gift Box" data-price="134.99"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Juliette Elegant Gift Box', 134.99)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Gifts</p>
+          <h4>Juliette Elegant Gift Box</h4>
+          <p class="price">£134.99</p>
+        </div>
+        <div class="product" data-name="Stylish Gift Bag" data-price="54.99" data-img="https://amoraimani.com/wp-content/uploads/2025/07/20250527_235706_with_bgc4-300x583.jpg" data-cat="Gifts" data-old="">
+          <div class="product-img">
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2025/07/20250527_235706_with_bgc4-300x583.jpg" alt="Stylish Gift Bag" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Stylish Gift Bag" data-price="54.99"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Stylish Gift Bag', 54.99)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Gifts</p>
+          <h4>Stylish Gift Bag</h4>
+          <p class="price">£54.99</p>
+        </div>
+        <div class="product" data-name="Pampering Elegant Gift Bag" data-price="59.99" data-img="https://amoraimani.com/wp-content/uploads/2025/07/20250528_000947_with_bgc7-300x626.jpg" data-cat="Gifts" data-old="">
+          <div class="product-img">
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2025/07/20250528_000947_with_bgc7-300x626.jpg" alt="Pampering Gift Bag" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Pampering Elegant Gift Bag" data-price="59.99"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Pampering Elegant Gift Bag', 59.99)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Gifts</p>
+          <h4>Pampering & Elegant Gift Bag</h4>
+          <p class="price">£59.99</p>
+        </div>
+        <div class="product" data-name="Elegant Feather Gift Bag" data-price="39.99" data-img="https://amoraimani.com/wp-content/uploads/2025/07/20250527_233831_with_bgc33-300x459.jpg" data-cat="Gifts" data-old="">
+          <div class="product-img">
+            <button class="wishlist-btn">&#x2661;</button>
+            <img src="https://amoraimani.com/wp-content/uploads/2025/07/20250527_233831_with_bgc33-300x459.jpg" alt="Elegant Feather Gift Bag" loading="lazy">
+            <div class="add-layer">
+              <div class="size-select" data-name="Elegant Feather Gift Bag" data-price="39.99"></div>
+              <button class="add" onclick="event.stopPropagation(); addToCart('Elegant Feather Gift Bag', 39.99)">Add to Cart</button>
+            </div>
+          </div>
+          <p class="product-cat">Gifts</p>
+          <h4>Elegant Feather Gift Bag</h4>
+          <p class="price">£39.99</p>
+        </div>
+      </div>
+      <button class="carousel-arrow next" onclick="scrollCarousel('gift-carousel', 1)">&#x203A;</button>
+    </div>
+  </section>
+
+  <!-- Lookbook -->
+  <section class="section" style="padding-bottom: 0;">
+    <div class="sec-head reveal">
+      <span class="kicker">Visual Stories</span>
+      <h2>The <em>Lookbook</em></h2>
+    </div>
+  </section>
+  <div class="lookbook">
+    <div class="lookbook-item">
+      <img src="https://amoraimani.com/wp-content/uploads/2022/08/Facetune-09-08-2022-14-51-22-scaled.jpg" alt="" loading="lazy">
+      <div class="ov"><span>Evening Edit</span></div>
+    </div>
+    <div class="lookbook-item">
+      <img src="https://amoraimani.com/wp-content/uploads/2020/07/dress043.jpg" alt="" loading="lazy">
+      <div class="ov"><span>Bridal</span></div>
+    </div>
+    <div class="lookbook-item">
+      <img src="https://amoraimani.com/wp-content/uploads/2020/12/Hef3bd16787d94737a6bcb989f492dc70s.jpg" alt="" loading="lazy">
+      <div class="ov"><span>Jewellery</span></div>
+    </div>
+    <div class="lookbook-item">
+      <img src="https://amoraimani.com/wp-content/uploads/2020/11/HTB1jClZHFXXXXX3aXXXq6xXFXXXV-1.jpg" alt="" loading="lazy">
+      <div class="ov"><span>Accessories</span></div>
+    </div>
+    <div class="lookbook-item">
+      <img src="https://amoraimani.com/wp-content/uploads/2020/07/dress013-480x900.jpg" alt="" loading="lazy">
+      <div class="ov"><span>Couture</span></div>
+    </div>
+  </div>
+
+  <!-- Complete the Look -->
+  <section class="ctl">
+    <div class="sec-head reveal">
+      <span class="kicker">Finish Your Outfit</span>
+      <h2>Complete the <em>Look</em></h2>
+    </div>
+    <div class="ctl-grid">
+      <div class="ctl-item">
+        <img src="https://amoraimani.com/wp-content/uploads/2023/07/TheMYSTICRinge.jpeg" alt="" loading="lazy">
+        <h5>The Mystic Ring</h5>
+        <span class="ctl-price">£124</span>
+      </div>
+      <div class="ctl-item">
+        <img src="https://amoraimani.com/wp-content/uploads/2020/06/carina-mint-green-full-front-c-300x450.jpg" alt="" loading="lazy">
+        <h5>Carina Floral Dress</h5>
+        <span class="ctl-price">£290</span>
+      </div>
+      <div class="ctl-item">
+        <img src="https://amoraimani.com/wp-content/uploads/2020/06/Gigi-black-side-full-c-300x450.jpg" alt="" loading="lazy">
+        <h5>Gigi Flapper Dress</h5>
+        <span class="ctl-price">£170</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="sec-head reveal">
+      <span class="kicker">Client Love</span>
+      <h2>What Our <em>Clients Say</em></h2>
+    </div>
+    <div class="testimonial-carousel reveal">
+      <div class="testimonial-track">
+        <div class="testimonial active">
+          <div class="stars">&#9733; &#9733; &#9733; &#9733; &#9733;</div>
+          <blockquote>"I wore the Aurora dress to a gala and received countless compliments. The fit was impeccable and the quality is outstanding."</blockquote>
+          <span class="author">— Victoria H., London</span>
+        </div>
+        <div class="testimonial">
+          <div class="stars">&#9733; &#9733; &#9733; &#9733; &#9733;</div>
+          <blockquote>"Amora Imani's curation is unmatched. My Tag Heuer arrived beautifully packaged and exceeded every expectation."</blockquote>
+          <span class="author">— James M., New York</span>
+        </div>
+        <div class="testimonial">
+          <div class="stars">&#9733; &#9733; &#9733; &#9733; &#9733;</div>
+          <blockquote>"From the first consultation to the final fitting, the bespoke experience was extraordinary. A true Knightsbridge atelier."</blockquote>
+          <span class="author">— Amina K., Dubai</span>
+        </div>
+      </div>
+      <div class="testimonial-dots">
+        <span class="active"></span><span></span><span></span>
+      </div>
     </div>
   </section>
 
@@ -1042,7 +1940,7 @@
     </div>
   </section>
 
-  <!-- === EVENTS SECTION === -->
+  <!-- Events -->
   <section id="events">
     <div class="event-hero reveal">
       <div class="event-hero-bg"></div>
@@ -1059,8 +1957,11 @@
             <span><strong>Venue</strong>The Peninsula London</span>
             <span><strong>Dress Code</strong>Black Tie · Couture</span>
           </div>
-          <a href="#event-tickets" class="cta cta-primary">Secure Your Invitation</a>
-          <a href="https://amoraimani.com/product/the-peninsula-londons-most-exclusive-event/" class="cta" target="_blank">Learn More</a>
+          <div class="event-cta-group">
+            <a href="#event-tickets" class="cta cta-primary">Secure Your Invitation</a>
+            <a href="https://amoraimani.com/product/the-peninsula-londons-most-exclusive-event/" class="cta" target="_blank">Learn More</a>
+            <a href="#" class="cta" onclick="event.preventDefault(); openSizeGuide()">Size Guide</a>
+          </div>
         </div>
       </div>
     </div>
@@ -1114,6 +2015,43 @@
     </div>
   </section>
 
+  <!-- Blog -->
+  <section class="section" style="background: var(--bg);">
+    <div class="sec-head reveal">
+      <span class="kicker">From The Journal</span>
+      <h2>Latest <em>Blogs</em></h2>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card reveal">
+        <img src="https://amoraimani.com/wp-content/uploads/2024/08/opal-necklace.jpg" alt="Australian Opal Necklace" loading="lazy">
+        <div class="blog-card-body">
+          <span class="blog-date">14 August 2026</span>
+          <h4>Captivating Elegance: Unveiling the Australian Opal Necklace 18 Carat White Gold by DS Jewellery</h4>
+          <p>A stunning piece from DS Jewellery — Australian opal set in 18 carat white gold. See why it's turning heads this season.</p>
+          <a href="https://amoraimani.com/captivating-elegance-unveiling-the-australian-opal-necklace-18-carat-white-gold-by-ds-jewellery/" target="_blank">Read More</a>
+        </div>
+      </div>
+      <div class="blog-card reveal reveal-delay-1">
+        <img src="https://amoraimani.com/wp-content/uploads/2020/07/dress043.jpg" alt="Valentine's Day" loading="lazy">
+        <div class="blog-card-body">
+          <span class="blog-date">14 February 2026</span>
+          <h4>Valentine's Day — A Date Known Throughout The Globe</h4>
+          <p>14th February, a date known throughout the globe as the day associated with love. Traditionally, a day for romance and thoughtful gifts.</p>
+          <a href="https://amoraimani.com/valentines-day/" target="_blank">Read More</a>
+        </div>
+      </div>
+      <div class="blog-card reveal reveal-delay-2">
+        <img src="https://amoraimani.com/wp-content/uploads/2020/10/IMG_20190822_163008_Bokeh.jpg" alt="Just Like That Season Finale" loading="lazy">
+        <div class="blog-card-body">
+          <span class="blog-date">8 February 2026</span>
+          <h4>Just Like That — Season Finale</h4>
+          <p>So a trip to Paris by Carrie Bradshaw ended a thrilling season of many ups and downs. Amora Imani shares its favourite style moments.</p>
+          <a href="https://amoraimani.com/just-like-that-season-finale/" target="_blank">Read More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- About -->
   <section class="about">
     <div class="about-grid reveal">
@@ -1121,8 +2059,10 @@
       <div class="about-content">
         <span class="kicker">About Amora Imani</span>
         <h2>A modern <em>atelier</em><br>in Knightsbridge, London.</h2>
-        <p>The go-to destination for the confident, glamorous, fashion-savvy woman. Figure-flattering designs, body-contouring fabrications, and quality are at the heart of our brand.</p>
-        <p>We also host a marketplace for independent designers to grow through our store — quality-checked, curated, and delivered worldwide.</p>
+        <p>We're Amora Imani, the go-to online destination for the confident, glamorous, fashion-savvy girl in search of that something extra special. Figure-flattering designs, body-contouring fabrications and quality are always at the heart of our brand.</p>
+        <p>Amora Imani is renowned for its statement designs, iconic silhouettes and exquisite embellishments that are made to be seen. The team prides itself on possessing a thorough understanding of composition, form and fit — they know that clothes serve a purpose and must be functional, but also that how a garment makes the wearer feel is pivotal.</p>
+        <p>Amora Imani is about statement designs and iconic silhouettes — reimagined for the modern woman who wants to stand out. We bring you fresh looks from independent designers alongside our own collections.</p>
+        <p>We also host a marketplace for independent designers to grow through our store — quality-checked, curated, and delivered worldwide. We love to collaborate with independent and small businesses to facilitate their growth through our platform.</p>
         <a href="https://amoraimani.com/about-us/" class="cta" target="_blank">Discover More</a>
       </div>
     </div>
@@ -1133,6 +2073,8 @@
     <div class="reveal">
       <span class="kicker">Follow Us</span>
       <h2>@<em>amoraimani</em></h2>
+      <p style="margin-top: 0.5rem; font-size: 0.82rem; color: var(--taupe);">Follow us on Instagram for style inspiration, behind-the-scenes and exclusives</p>
+      <a href="http://instagram.com/amoraimani" style="display: inline-block; margin-top: 1rem; padding: 0.7rem 1.8rem; border: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; font-weight: 500; transition: all 0.3s;" target="_blank" onmouseover="this.style.background='var(--espresso)'; this.style.color='var(--white)';" onmouseout="this.style.background='transparent'; this.style.color='var(--ink';">Follow @amoraimani</a>
     </div>
   </section>
   <div class="insta-grid">
@@ -1164,7 +2106,7 @@
       <div class="footer-brand">
         <img src="amora-imani-logo.png" alt="Amora Imani">
         <p>Luxury fashion boutique in Knightsbridge, London. Dresses, fine jewellery, luxury watches, and bespoke gowns for the modern woman.</p>
-        <p style="margin-top: 0.85rem; color: var(--sand); font-size: 0.82rem;">sales@amoraimani.com</p>
+        <p style="margin-top: 0.85rem; color: rgba(255,255,255,0.5); font-size: 0.82rem;">sales@amoraimani.com</p>
       </div>
       <div>
         <h4>Shop</h4>
@@ -1181,20 +2123,29 @@
         <a href="https://amoraimani.com/about-us/" target="_blank">About Us</a>
         <a href="https://amoraimani.com/store-listing/" target="_blank">Our Brands</a>
         <a href="https://amoraimani.com/marketplace-intro/" target="_blank">Marketplace</a>
+        <a href="https://amoraimani.com/start-selling-with-us/" target="_blank">Become a Vendor</a>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="https://amoraimani.com/whats-new/" target="_blank">What's New</a>
+        <a href="https://amoraimani.com/product-category/sale/" target="_blank">Sale</a>
+        <a href="https://amoraimani.com/gifts/" target="_blank">Gifts</a>
+        <a href="https://amoraimani.com/my-account/" target="_blank">My Account</a>
+        <a href="https://amoraimani.com/wishlist/" target="_blank">Wishlist</a>
       </div>
       <div>
         <h4>Information</h4>
         <a href="https://amoraimani.com/privacy-policy/" target="_blank">Privacy Policy</a>
         <a href="https://amoraimani.com/terms-conditions/" target="_blank">Terms & Conditions</a>
-        <a href="https://amoraimani.com/start-selling-with-us/" target="_blank">Become a Vendor</a>
-        <a href="https://amoraimani.com/my-account/" target="_blank">My Account</a>
-        <a href="https://amoraimani.com/wishlist/" target="_blank">Wishlist</a>
+        <a href="https://amoraimani.com/marketplace-intro/" target="_blank">Marketplace Info</a>
+        <a href="https://amoraimani.com/store-listing/" target="_blank">Brands</a>
       </div>
       <div>
         <h4>Connect</h4>
         <a href="http://instagram.com/amoraimani" target="_blank">Instagram</a>
         <a href="http://facebook.com/amoraimani" target="_blank">Facebook</a>
         <a href="mailto:sales@amoraimani.com">Email Us</a>
+        <a href="https://amoraimani.com/newsletter/" target="_blank">Newsletter</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -1205,102 +2156,213 @@
     </div>
   </footer>
 
+  <!-- Quick View Modal -->
+  <div class="qv-overlay" id="qvOverlay" onclick="if(event.target===this)closeQV()">
+    <div class="qv-modal">
+      <button class="qv-close" onclick="closeQV()">&times;</button>
+      <div class="qv-image" id="qvImage"><img src="" alt=""></div>
+      <div class="qv-details" id="qvDetails">
+        <p class="qv-cat" id="qvCat"></p>
+        <h3 id="qvName"></h3>
+        <p class="qv-price" id="qvPrice"></p>
+        <p id="qvDesc">Part of the latest Amora Imani collection — available in selected sizes.</p>
+        <div class="qv-sizes" id="qvSizes"></div>
+        <button class="qv-add" id="qvAdd">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Size Guide Modal -->
+  <div class="sg-overlay" id="sgOverlay" onclick="if(event.target===this)closeSizeGuide()">
+    <div class="sg-modal">
+      <button class="sg-close" onclick="closeSizeGuide()">&times;</button>
+      <h3>Size Guide</h3>
+      <p class="sg-sub">Find your perfect fit — measurements in inches</p>
+      <table class="sg-table">
+        <thead><tr><th>Size</th><th>Bust</th><th>Waist</th><th>Hips</th><th>UK</th></tr></thead>
+        <tbody>
+          <tr><td>XS</td><td>31-32</td><td>23-24</td><td>33-34</td><td>4-6</td></tr>
+          <tr><td>S</td><td>33-34</td><td>25-26</td><td>35-36</td><td>8-10</td></tr>
+          <tr><td>M</td><td>35-36</td><td>27-28</td><td>37-38</td><td>10-12</td></tr>
+          <tr><td>L</td><td>37-38</td><td>29-30</td><td>39-40</td><td>14-16</td></tr>
+          <tr><td>XL</td><td>39-40</td><td>31-32</td><td>41-42</td><td>16-18</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Search Overlay -->
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-header">
+      <h3>Search</h3>
+      <button class="search-close" onclick="closeSearch()">&times;</button>
+    </div>
+    <div class="search-input-wrap">
+      <input type="text" id="searchInput" placeholder="Search products..." oninput="searchProducts(this.value)" autofocus>
+      <button>&#x1F50D;</button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div class="checkout-overlay" id="checkoutOverlay" onclick="if(event.target===this)closeCheckout()">
+    <div class="checkout-modal">
+      <button class="checkout-close" onclick="closeCheckout()">&times;</button>
+      <h3>Checkout</h3>
+      <p class="checkout-sub">Complete your order</p>
+      <div class="checkout-summary" id="checkoutSummary"></div>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="checkoutName" placeholder="John Doe">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="checkoutEmail" placeholder="john@example.com">
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" id="checkoutPhone" placeholder="+44">
+        </div>
+        <div class="form-group">
+          <label>Postcode</label>
+          <input type="text" id="checkoutPostcode" placeholder="SW1X 7XL">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Delivery Address</label>
+        <input type="text" id="checkoutAddress" placeholder="Street, city">
+      </div>
+      <button class="checkout-pay-btn" onclick="placeOrder()">Place Order</button>
+    </div>
+  </div>
+
+  <!-- Event Popup -->
+  <div class="event-popup-overlay" id="eventPopup">
+    <div class="event-popup">
+      <button class="event-popup-close" onclick="closeEventPopup()">&times;</button>
+      <img class="event-popup-img" src="https://amoraimani.com/wp-content/uploads/2026/05/WhatsApp-Image-2026-05-30-at-14.52.30-723x1024.jpeg" alt="The Peninsula Event" loading="lazy">
+      <div class="event-popup-body">
+        <span class="badge">London Fashion Week 2026</span>
+        <h3>The Peninsula —<br><em>London's Most Exclusive Event</em></h3>
+        <p>An unforgettable evening of couture, mystery, and grandeur. Couture showcases, immersive entertainment, elite networking, and a spectacular charity auction.</p>
+        <div class="event-popup-meta">
+          <span><strong>Saturday</strong>19 Sep 2026</span>
+          <span><strong>Time</strong>6:00 PM – Late</span>
+          <span><strong>Venue</strong>The Peninsula London</span>
+        </div>
+        <div class="popup-cta-group">
+          <a href="#event-tickets" class="popup-cta popup-cta-primary" onclick="closeEventPopup()">Secure Your Invitation</a>
+          <a href="https://amoraimani.com/product/the-peninsula-londons-most-exclusive-event/" class="popup-cta" target="_blank">Learn More</a>
+        </div>
+        <div class="event-popup-dismiss">
+          <button onclick="dismissEventPopup()">Don't show this again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to Top -->
+  <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#x2191;</button>
+
   <!-- Toast -->
   <div class="toast" id="toast">Added to cart</div>
 
   <script>
+    // === LOADER ===
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 600);
+    });
+
     // === LOCALSTORAGE CART ===
     let cart = JSON.parse(localStorage.getItem('amoraCart') || '[]');
 
-    function saveCart() {
-      localStorage.setItem('amoraCart', JSON.stringify(cart));
-    }
+    function saveCart() { localStorage.setItem('amoraCart', JSON.stringify(cart)); }
 
-    function getTotalItems() {
-      return cart.reduce((sum, item) => sum + item.qty, 0);
-    }
+    function getTotalItems() { return cart.reduce(function(sum, item) { return sum + item.qty; }, 0); }
 
-    function getTotalPrice() {
-      return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    }
+    function getTotalPrice() { return cart.reduce(function(sum, item) { return sum + item.price * item.qty; }, 0); }
 
     function addToCart(name, price, size) {
-      const key = name + (size ? ' (' + size + ')' : '');
-      const existing = cart.find(i => i.key === key);
+      var key = name + (size ? ' (' + size + ')' : '');
+      var existing = null;
+      for (var i = 0; i < cart.length; i++) {
+        if (cart[i].key === key) { existing = cart[i]; break; }
+      }
       if (existing) {
         existing.qty++;
       } else {
-        cart.push({ key, name, price, size, qty: 1 });
+        cart.push({ key: key, name: name, price: price, size: size, qty: 1 });
       }
       saveCart();
       updateCartUI();
-      const toast = document.getElementById('toast');
+      var countEl = document.getElementById('cartCount');
+      countEl.classList.remove('bump');
+      void countEl.offsetWidth;
+      countEl.classList.add('bump');
+      var toast = document.getElementById('toast');
       toast.textContent = name + (size ? ' (' + size + ')' : '') + ' — £' + price.toLocaleString() + ' added to cart';
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2800);
+      setTimeout(function() { toast.classList.remove('show'); }, 2800);
     }
 
     function removeFromCart(key) {
-      cart = cart.filter(i => i.key !== key);
+      cart = cart.filter(function(i) { return i.key !== key; });
       saveCart();
       updateCartUI();
     }
 
     function updateQty(key, delta) {
-      const item = cart.find(i => i.key === key);
-      if (!item) return;
-      item.qty += delta;
-      if (item.qty <= 0) {
-        cart = cart.filter(i => i.key !== key);
+      for (var i = 0; i < cart.length; i++) {
+        if (cart[i].key === key) {
+          cart[i].qty += delta;
+          if (cart[i].qty <= 0) { cart.splice(i, 1); }
+          break;
+        }
       }
       saveCart();
       updateCartUI();
     }
 
     function updateCartUI() {
-      const count = getTotalItems();
+      var count = getTotalItems();
       document.getElementById('cartCount').textContent = count;
-
-      const container = document.getElementById('miniCartItems');
-      const totalEl = document.getElementById('miniCartTotal');
-      const totalAmount = document.getElementById('miniCartTotalAmount');
-      const checkoutBtn = document.getElementById('miniCartCheckout');
-
+      var container = document.getElementById('miniCartItems');
+      var totalEl = document.getElementById('miniCartTotal');
+      var totalAmount = document.getElementById('miniCartTotalAmount');
+      var checkoutBtn = document.getElementById('miniCartCheckout');
       if (cart.length === 0) {
         container.innerHTML = '<div class="mini-cart-empty">Your bag is empty</div>';
         totalEl.style.display = 'none';
         checkoutBtn.style.display = 'none';
         return;
       }
-
-      let html = '<ul class="mini-cart-items">';
-      cart.forEach(item => {
-        html += `
-          <li class="mini-cart-item">
-            <div style="background:var(--stone);width:50px;height:65px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--taupe);">&#x1F6CD;</div>
-            <div class="mini-cart-item-info">
-              <h5>${item.name}</h5>
-              ${item.size ? '<span class="variant">' + item.size + '</span>' : ''}
-              <div class="mc-price">£${(item.price * item.qty).toLocaleString()}</div>
-              <div class="mini-cart-item-qty">
-                <button onclick="updateQty('${item.key}', -1)">&#x2212;</button>
-                <span>${item.qty}</span>
-                <button onclick="updateQty('${item.key}', 1)">+</button>
-              </div>
-            </div>
-            <button class="mini-cart-item-remove" onclick="removeFromCart('${item.key}')">&times;</button>
-          </li>
-        `;
-      });
+      var html = '<ul class="mini-cart-items">';
+      for (var i = 0; i < cart.length; i++) {
+        var item = cart[i];
+        html += '<li class="mini-cart-item">';
+        html += '<div class="mini-cart-item-img" style="display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--taupe);background:var(--stone);">&#x1F6CD;</div>';
+        html += '<div class="mini-cart-item-info">';
+        html += '<h5>' + item.name + '</h5>';
+        if (item.size) { html += '<span class="variant">' + item.size + '</span>'; }
+        html += '<div class="mc-price">£' + (item.price * item.qty).toLocaleString() + '</div>';
+        html += '<div class="mc-qty">';
+        html += '<button onclick="updateQty(\'' + item.key + '\', -1)">&#x2212;</button>';
+        html += '<span>' + item.qty + '</span>';
+        html += '<button onclick="updateQty(\'' + item.key + '\', 1)">+</button>';
+        html += '</div></div>';
+        html += '<button class="mini-cart-item-remove" onclick="removeFromCart(\'' + item.key + '\')">&times;</button>';
+        html += '</li>';
+      }
       html += '</ul>';
       container.innerHTML = html;
-
       totalEl.style.display = 'flex';
       totalAmount.textContent = '£' + getTotalPrice().toLocaleString();
       checkoutBtn.style.display = 'block';
     }
 
-    // Cart toggle
     document.getElementById('cartToggle').addEventListener('click', function(e) {
       e.preventDefault();
       document.getElementById('miniCart').classList.toggle('open');
@@ -1309,28 +2371,26 @@
       document.getElementById('miniCart').classList.remove('open');
     });
 
-    // === EVENT TICKET ADD TO CART ===
+    // === EVENT TICKET ===
     function addEventToCart() {
-      const select = document.getElementById('ticketSelect');
-      const price = parseInt(select.value);
-      const label = select.options[select.selectedIndex].text;
+      var select = document.getElementById('ticketSelect');
+      var price = parseInt(select.value);
+      var label = select.options[select.selectedIndex].text;
       addToCart('The Peninsula Event Ticket', price, label.split(' — ')[0]);
       document.getElementById('miniCart').classList.add('open');
     }
 
     // === HERO SLIDESHOW ===
-    let slideIndex = 0;
-    const slides = document.querySelectorAll('.hero-slide');
-    const dots = document.querySelectorAll('.hero-dots span');
-    let slideInterval;
+    var slideIndex = 0;
+    var slides = document.querySelectorAll('.hero-slide');
+    var dots = document.querySelectorAll('.hero-dots span');
+    var slideInterval;
 
     function showSlide(index) {
-      slides.forEach((s, i) => {
-        s.classList.toggle('active', i === index);
-      });
-      dots.forEach((d, i) => {
-        d.classList.toggle('active', i === index);
-      });
+      for (var i = 0; i < slides.length; i++) {
+        slides[i].classList.toggle('active', i === index);
+        dots[i].classList.toggle('active', i === index);
+      }
     }
 
     function nextSlide() {
@@ -1338,60 +2398,263 @@
       showSlide(slideIndex);
     }
 
-    dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => {
-        clearInterval(slideInterval);
-        slideIndex = i;
-        showSlide(slideIndex);
-        slideInterval = setInterval(nextSlide, 6000);
-      });
-    });
+    for (var i = 0; i < dots.length; i++) {
+      (function(index) {
+        dots[index].addEventListener('click', function() {
+          clearInterval(slideInterval);
+          slideIndex = index;
+          showSlide(slideIndex);
+          slideInterval = setInterval(nextSlide, 6000);
+        });
+      })(i);
+    }
 
     slideInterval = setInterval(nextSlide, 6000);
 
     // === CAROUSEL SCROLL ===
     function scrollCarousel(id, dir) {
-      const c = document.getElementById(id);
+      var c = document.getElementById(id);
       c.scrollBy({ left: dir * (c.clientWidth * 0.5), behavior: 'smooth' });
     }
 
     // === SIZE SELECTORS ===
-    const sizes = ['XS', 'S', 'M', 'L', 'XL'];
-    document.querySelectorAll('.size-select').forEach(container => {
-      const name = container.dataset.name;
-      const price = parseInt(container.dataset.price);
-      sizes.forEach(s => {
-        const btn = document.createElement('button');
-        btn.textContent = s;
-        btn.addEventListener('click', function(e) {
-          e.stopPropagation();
-          addToCart(name, price, s);
-        });
-        container.appendChild(btn);
+    var sizes = ['XS', 'S', 'M', 'L', 'XL'];
+    var sizeContainers = document.querySelectorAll('.size-select');
+    for (var s = 0; s < sizeContainers.length; s++) {
+      (function(container) {
+        var name = container.dataset.name;
+        var price = parseInt(container.dataset.price);
+        for (var sz = 0; sz < sizes.length; sz++) {
+          (function(szName) {
+            var btn = document.createElement('button');
+            btn.textContent = szName;
+            btn.addEventListener('click', function(e) {
+              e.stopPropagation();
+              addToCart(name, price, szName);
+            });
+            container.appendChild(btn);
+          })(sizes[sz]);
+        }
+      })(sizeContainers[s]);
+    }
+
+    // === QUICK VIEW ===
+    function openQV(name, price, oldPrice, img, cat) {
+      document.getElementById('qvCat').textContent = cat || '';
+      document.getElementById('qvName').textContent = name;
+      var priceHtml = oldPrice ? '<span class="old">£' + oldPrice.toLocaleString() + '</span>' : '';
+      priceHtml += '£' + price.toLocaleString();
+      document.getElementById('qvPrice').innerHTML = priceHtml;
+      document.getElementById('qvImage').querySelector('img').src = img;
+      var qvSizes = document.getElementById('qvSizes');
+      qvSizes.innerHTML = '';
+      var sizeNames = ['XS', 'S', 'M', 'L', 'XL'];
+      var selectedSize = null;
+      for (var i = 0; i < sizeNames.length; i++) {
+        (function(sz) {
+          var btn = document.createElement('button');
+          btn.textContent = sz;
+          btn.addEventListener('click', function() {
+            qvSizes.querySelectorAll('button').forEach(function(b) { b.classList.remove('selected'); });
+            btn.classList.add('selected');
+            selectedSize = sz;
+          });
+          qvSizes.appendChild(btn);
+        })(sizeNames[i]);
+      }
+      var addBtn = document.getElementById('qvAdd');
+      addBtn.onclick = function() {
+        addToCart(name, price, selectedSize || 'Standard');
+        closeQV();
+      };
+      document.getElementById('qvOverlay').classList.add('open');
+    }
+
+    function closeQV() {
+      document.getElementById('qvOverlay').classList.remove('open');
+    }
+
+    document.querySelectorAll('.product').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var name = this.dataset.name;
+        var price = parseInt(this.dataset.price);
+        var img = this.dataset.img;
+        var cat = this.dataset.cat;
+        var old = parseInt(this.dataset.old) || 0;
+        openQV(name, price, old, img, cat);
       });
     });
 
-    // === INTERSECTION OBSERVER ===
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    // === SIZE GUIDE ===
+    function openSizeGuide() { document.getElementById('sgOverlay').classList.add('open'); }
+    function closeSizeGuide() { document.getElementById('sgOverlay').classList.remove('open'); }
 
-    // === MOBILE TOGGLE ===
-    const toggle = document.getElementById('mobileToggle');
-    const leftNav = document.querySelector('.nav-left');
-    toggle.addEventListener('click', () => {
-      const open = leftNav.style.display === 'flex';
-      leftNav.style.display = open ? '' : 'flex';
-      if (!open) {
-        Object.assign(leftNav.style, {
-          flexDirection: 'column', position: 'absolute', top: '100%',
-          left: '0', right: '0', background: 'var(--paper)',
-          padding: '1.5rem 2rem', gap: '1.25rem', alignItems: 'flex-start',
-          borderBottom: '1px solid var(--line)'
-        });
+    // === TESTIMONIALS ===
+    (function() {
+      var tIndex = 0;
+      var testimonials = document.querySelectorAll('.testimonial');
+      var tDots = document.querySelectorAll('.testimonial-dots span');
+      if (testimonials.length === 0) return;
+      function showTestimonial(index) {
+        for (var i = 0; i < testimonials.length; i++) {
+          testimonials[i].classList.toggle('active', i === index);
+          tDots[i].classList.toggle('active', i === index);
+        }
       }
+      for (var i = 0; i < tDots.length; i++) {
+        (function(index) {
+          tDots[index].addEventListener('click', function() {
+            tIndex = index;
+            showTestimonial(tIndex);
+          });
+        })(i);
+      }
+      setInterval(function() {
+        tIndex = (tIndex + 1) % testimonials.length;
+        showTestimonial(tIndex);
+      }, 5000);
+    })();
+
+    // === HEADER HIDE/SHOW ON SCROLL ===
+    (function() {
+      var header = document.getElementById('header');
+      var lastScroll = 0;
+      window.addEventListener('scroll', function() {
+        var currentScroll = window.pageYOffset;
+        if (currentScroll > 120) {
+          header.classList.toggle('hidden', currentScroll > lastScroll && currentScroll > 200);
+        } else {
+          header.classList.remove('hidden');
+        }
+        lastScroll = currentScroll;
+      });
+    })();
+
+    // === BACK TO TOP ===
+    window.addEventListener('scroll', function() {
+      document.getElementById('backTop').classList.toggle('visible', window.pageYOffset > 600);
     });
+
+    // === INTERSECTION OBSERVER ===
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+
+    // === MOBILE OVERLAY NAV ===
+    function closeNav() { document.getElementById('navOverlay').classList.remove('open'); }
+    document.getElementById('mobileToggle').addEventListener('click', function() {
+      document.getElementById('navOverlay').classList.toggle('open');
+    });
+    document.getElementById('navOverlayClose').addEventListener('click', closeNav);
+
+    // === SEARCH ===
+    var productData = [];
+    document.querySelectorAll('.product').forEach(function(el) {
+      productData.push({
+        name: el.dataset.name || el.querySelector('h4')?.textContent,
+        price: parseFloat(el.dataset.price) || 0,
+        old: parseFloat(el.dataset.old) || 0,
+        img: el.dataset.img || '',
+        cat: el.dataset.cat || ''
+      });
+    });
+
+    function openSearch() {
+      document.getElementById('searchOverlay').classList.add('open');
+      document.getElementById('searchInput').value = '';
+      document.getElementById('searchResults').innerHTML = '';
+      setTimeout(function() { document.getElementById('searchInput').focus(); }, 100);
+    }
+
+    function closeSearch() { document.getElementById('searchOverlay').classList.remove('open'); }
+
+    function searchProducts(query) {
+      var results = document.getElementById('searchResults');
+      if (!query.trim()) { results.innerHTML = ''; return; }
+      var q = query.toLowerCase().trim();
+      var matches = productData.filter(function(p) {
+        return p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q);
+      });
+      if (matches.length === 0) {
+        results.innerHTML = '<div class="search-no-results">No products found for "' + query + '"</div>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < Math.min(matches.length, 20); i++) {
+        var m = matches[i];
+        var priceHtml = m.old ? '<span style="text-decoration:line-through;color:var(--taupe);margin-right:0.4rem;">£' + m.old.toLocaleString() + '</span>£' + m.price.toLocaleString() : '£' + m.price.toLocaleString();
+        html += '<div class="search-result-item" onclick="closeSearch();openQV(\'' + m.name.replace(/'/g, "\\'") + '\',' + m.price + ',' + m.old + ',\'' + m.img + '\',\'' + m.cat + '\')">';
+        html += '<img src="' + m.img + '" alt="" onerror="this.style.display=\'none\'">';
+        html += '<div class="info"><h5>' + m.name + '</h5>';
+        html += '<span class="cat">' + m.cat + '</span>';
+        html += '<div class="price">' + priceHtml + '</div></div></div>';
+      }
+      results.innerHTML = html;
+    }
+
+    document.querySelector('a[aria-label="Search"]')?.addEventListener('click', function(e) {
+      e.preventDefault();
+      openSearch();
+    });
+    document.getElementById('searchInput')?.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeSearch();
+    });
+
+    // === CHECKOUT ===
+    function openCheckout() {
+      var cartItems = JSON.parse(localStorage.getItem('amoraCart') || '[]');
+      if (cartItems.length === 0) { showToast('Your bag is empty'); return; }
+      var summary = document.getElementById('checkoutSummary');
+      var html = '';
+      var total = 0;
+      for (var i = 0; i < cartItems.length; i++) {
+        var item = cartItems[i];
+        html += '<div class="row"><span>' + item.name + ' x' + item.qty + '</span><span>£' + (item.price * item.qty).toLocaleString() + '</span></div>';
+        total += item.price * item.qty;
+      }
+      html += '<div class="row total"><span>Total</span><span>£' + total.toLocaleString() + '</span></div>';
+      summary.innerHTML = html;
+      document.getElementById('checkoutOverlay').classList.add('open');
+    }
+
+    function closeCheckout() { document.getElementById('checkoutOverlay').classList.remove('open'); }
+
+    function placeOrder() {
+      var name = document.getElementById('checkoutName').value.trim();
+      var email = document.getElementById('checkoutEmail').value.trim();
+      if (!name || !email) { showToast('Please fill in your name and email'); return; }
+      showToast('Thank you, ' + name.split(' ')[0] + '! Your order has been placed.');
+      localStorage.removeItem('amoraCart');
+      cart = [];
+      updateCartUI();
+      closeCheckout();
+    }
+
+    // Connect checkout button
+    document.getElementById('miniCartCheckout')?.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('miniCart').classList.remove('open');
+      openCheckout();
+    });
+
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(function() { t.classList.remove('show'); }, 2800);
+    }
+
+    // === EVENT POPUP ===
+    function closeEventPopup() { document.getElementById('eventPopup').classList.remove('open'); }
+    function dismissEventPopup() { localStorage.setItem('amoraEventDismissed', '1'); closeEventPopup(); }
+    (function() {
+      if (!localStorage.getItem('amoraEventDismissed')) {
+        setTimeout(function() { document.getElementById('eventPopup').classList.add('open'); }, 1500);
+      }
+    })();
 
     // Init cart UI
     updateCartUI();

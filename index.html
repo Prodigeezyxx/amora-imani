@@ -149,15 +149,16 @@
       overflow: hidden;
       background: var(--espresso);
     }
+    .hero-video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
     .hero-slide {
       position: absolute; inset: 0;
       opacity: 0; transition: opacity 1.2s ease;
     }
     .hero-slide.active { opacity: 1; }
-    .hero-slide .hero-img {
-      position: absolute; inset: 0;
-      background-size: cover; background-position: center; background-repeat: no-repeat;
-    }
     .hero-ov {
       position: absolute; inset: 0;
       background: linear-gradient(180deg, rgba(42,37,32,0.15) 0%, transparent 35%, rgba(42,37,32,0.55) 100%);
@@ -537,51 +538,7 @@
     }
     .campaign-content .cta:hover { background: var(--white); color: var(--espresso); }
 
-    /* === VIDEO === */
-    .video-sec {
-      padding: 5rem 0; background: var(--espresso); text-align: center;
-    }
-    .video-sec .kicker {
-      font-size: 0.66rem; letter-spacing: 0.28em; text-transform: uppercase;
-      color: var(--sand); display: block; margin-bottom: 0.65rem;
-    }
-    .video-sec h2 {
-      font-size: clamp(1.8rem, 3vw, 2.5rem); color: var(--white);
-      margin-bottom: 2.5rem; font-weight: 400;
-    }
-    .video-sec h2 em { font-style: italic; }
-    .video-wrap {
-      max-width: 880px; margin: 0 auto; padding: 0 2rem;
-    }
-    .video-frame {
-      position: relative; aspect-ratio: 16/9;
-      background: var(--espresso);
-      overflow: hidden;
-    }
-    .video-frame video {
-      width: 100%; height: 100%; object-fit: cover; display: block;
-    }
-    .video-frame .play {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%,-50%);
-      width: 76px; height: 76px; border-radius: 50%;
-      background: rgba(255,255,255,0.92);
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.3s; cursor: pointer; z-index: 2;
-    }
-    .video-frame .play::after {
-      content: ''; width: 0; height: 0;
-      border-left: 16px solid var(--espresso);
-      border-top: 11px solid transparent; border-bottom: 11px solid transparent;
-      margin-left: 4px;
-    }
-    .video-frame .cap {
-      position: absolute; bottom: 1.25rem; left: 1.25rem;
-      color: var(--white);
-      font-family: 'Cormorant Garamond', serif; font-style: italic;
-      font-size: 0.95rem; z-index: 2;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
-    }
+
 
     /* === SERVICES STRIP === */
     .services {
@@ -799,7 +756,7 @@
       <a href="#dresses">Dresses</a>
       <a href="#jewellery">Jewellery</a>
       <a href="#watches">Watches</a>
-      <a href="#world">The World of Amora</a>
+      <a href="#hero">The World of Amora</a>
     </nav>
     <a href="#" class="logo"><img src="amora-imani-logo.png" alt="Amora Imani"></a>
     <div class="nav-right">
@@ -826,9 +783,11 @@
 
   <!-- Hero -->
   <section class="hero" id="hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="amora video.mp4" type="video/mp4">
+    </video>
+    <div class="hero-ov"></div>
     <div class="hero-slide active">
-      <div class="hero-img" style="background-image: url('https://amoraimani.com/wp-content/uploads/2025/07/Orange-Modern-Coastal-Boutique-Shopify-Store-Blog-Banner-.png');"></div>
-      <div class="hero-ov"></div>
       <div class="hero-content">
         <span class="kicker">Autumn / Winter 2026</span>
         <h1>The New <em>Season</em></h1>
@@ -836,8 +795,6 @@
       </div>
     </div>
     <div class="hero-slide">
-      <div class="hero-img" style="background-image: url('https://amoraimani.com/wp-content/uploads/2021/10/amoraimani-dresses-1199x800.jpg');"></div>
-      <div class="hero-ov"></div>
       <div class="hero-content">
         <span class="kicker">Evening & Occasion</span>
         <h1>The Dress <em>Edit</em></h1>
@@ -845,8 +802,6 @@
       </div>
     </div>
     <div class="hero-slide">
-      <div class="hero-img" style="background-image: url('https://amoraimani.com/wp-content/uploads/2020/10/IMG_20190822_163008_Bokeh.jpg');"></div>
-      <div class="hero-ov"></div>
       <div class="hero-content">
         <span class="kicker">By Appointment</span>
         <h1>Bespoke <em>Couture</em></h1>
@@ -1159,23 +1114,6 @@
     </div>
   </section>
 
-  <!-- Video -->
-  <section class="video-sec" id="world">
-    <div class="container" style="max-width: 1400px; margin: 0 auto;">
-      <span class="kicker">Behind the Brand</span>
-      <h2>The Amora Imani <em>Story</em></h2>
-      <div class="video-wrap reveal">
-        <div class="video-frame" id="videoFrame">
-          <video id="brandVideo" autoplay muted loop playsinline>
-            <source src="amora video.mp4" type="video/mp4">
-          </video>
-          <div class="play" id="playBtn" style="display:none;"></div>
-          <div class="cap">The Amora Imani film</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- About -->
   <section class="about">
     <div class="about-grid reveal">
@@ -1454,17 +1392,6 @@
         });
       }
     });
-
-    // === VIDEO PLAY/PAUSE ===
-    const v = document.getElementById('brandVideo');
-    const playBtn = document.getElementById('playBtn');
-    const frame = document.getElementById('videoFrame');
-    frame.addEventListener('click', () => {
-      if (v.paused) { v.play(); playBtn.style.display = 'none'; }
-      else { v.pause(); playBtn.style.display = 'flex'; }
-    });
-    v.addEventListener('play', () => { playBtn.style.display = 'none'; });
-    v.addEventListener('pause', () => { playBtn.style.display = 'flex'; });
 
     // Init cart UI
     updateCartUI();
